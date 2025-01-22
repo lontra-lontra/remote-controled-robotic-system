@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Example</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        input[type="text"] { width: 300px; padding: 8px; }
+        button { padding: 8px 16px; }
+    </style>
+</head>
+<body>
+
+    <h1>WebSocket Example</h1>
+
+    <label for="PInput">P: </label>
+    <input type="text" id="PInput" placeholder="Enter value for P">
+    <br>
+    <label for="IInput">I: </label>
+    <input type="text" id="IInput" placeholder="Enter value for I">
+    <br>
+    <label for="DInput">D: </label>
+    <input type="text" id="DInput" placeholder="Enter value for D">
+    <br>
+    <button onclick="sendMessage()">Send</button>
+
+    <script>
+        // Replace with your WebSocket server URL
+        const socketUrl = "ws://10.21.27.145:8080";
+        let socket = new WebSocket(socketUrl);
+
+        socket.onopen = function() {
+            console.log("Connected to WebSocket server");
+        };
+
+        socket.onmessage = function(event) {
+            console.log("Message from server: ", event.data);
+        };
+
+        socket.onerror = function(error) {
+            console.error("WebSocket error: ", error);
+        };
+
+        socket.onclose = function() {
+            console.log("WebSocket connection closed");
+        };
+
+        function sendMessage() {
+            const PInput = document.getElementById("PInput");
+            const IInput = document.getElementById("IInput");
+            const DInput = document.getElementById("DInput");
+
+            const PValue = PInput.value;
+            const IValue = IInput.value;
+            const DValue = DInput.value;
+
+            const jsonData = {
+                "BlockID": "webpub 1",
+                "Signal": [
+                    {
+                        "DataType": "double",
+                        "Value": [PValue]
+                    },
+                    {
+                        "DataType": "double",
+                        "Value": [IValue]
+                    },
+                    {
+                        "DataType": "double",
+                        "Value": [DValue]
+                    }
+                ]
+            };
+
+            console.log(jsonData);
+
+            if (socket.readyState === WebSocket.OPEN) {
+                socket.send(JSON.stringify(jsonData));
+                console.log("JSON sent: ", jsonData);
+            } else {
+                console.error("WebSocket is not open");
+            }
+        }
+    </script>
+
+<iframe src="http://10.21.27.145:8000" width="640" height="480"></iframe>
+</body>
+</html>
