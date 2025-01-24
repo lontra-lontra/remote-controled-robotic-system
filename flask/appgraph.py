@@ -17,7 +17,7 @@ def generate_data():
         socketio.emit('update_data', {'time': current_time, 'value': random_value})  # Send data to client
 
 # Start the data generator in a separate thread
-@app.before_first_request
+@app.before_request
 def start_data_thread():
     thread = Thread(target=generate_data)
     thread.daemon = True
