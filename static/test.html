@@ -1,81 +1,69 @@
-from flask import Flask, request, jsonify, Response
-import websocket
-import threading
-import json
-import io
-from picamera2 import Picamera2
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Project de IDS</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f8ff;
+        text-align: center;
+        padding: 50px;
+      }
+      h1 {
+        color: #cc0641;
+        font-size: 3rem;
+      }
+    </style>
+</head>
+<body>
+    <h1>WELCOME TOUT LE MONDE A NOTRE SUPER PROJECT DE IDS</h1>
+    <img src="minesparisLOGO.png" alt="LOGO">
+    <label for="PInput">P: </label>
+    <input type="text" id="PInput" placeholder="Enter value for P">
+    <br>
+    <label for="IInput">I: </label>
+    <input type="text" id="IInput" placeholder="Enter value for I">
+    <br>
+    <label for="DInput">D: </label>
+    <input type="text" id="DInput" placeholder="Enter value for D">
+    <br>
+    <button onclick="sendMessage()">Send</button>
 
-app = Flask(__name__)
+    <script>
+        async function sendMessage() {
+            const PInput = document.getElementById("PInput").value;
+            const IInput = document.getElementById("IInput").value;
+            const DInput = document.getElementById("DInput").value;
 
-# WebSocket settings
-WEBSOCKET_URL = "ws://10.21.27.145:8080"
-ws = None
+            const jsonData = {
+                "BlockID": "webpub 1",
+                "Signal": [
+                    { "DataType": "double", "Value": [PInput] },
+                    { "DataType": "double", "Value": [IInput] },
+                    { "DataType": "double", "Value": [DInput] }
+                ]
+            };
 
-# Initialize camera
-picam2 = Picamera2()
-picam2.configure(picam2.create_video_configuration(main={"size": (640, 480)}))
-picam2.start()
+            try {
+                const response = await fetch('/api/send-data', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(jsonData)
+                });
 
-def websocket_connect():
-    global ws
-    try:
-        ws = websocket.create_connection(WEBSOCKET_URL)
-        print("Connected to WebSocket server")
-    except Exception as e:
-        print(f"Error connecting to WebSocket: {e}")
+                if (response.ok) {
+                    console.log('Data sent successfully');
+                } else {
+                    console.error('Error sending data:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+    </script>
 
-@app.route('/api/send-data', methods=['POST'])
-def send_data():
-    global ws
-    if ws is None or not ws.connected:
-        websocket_connect()
-
-    try:
-        data = request.json
-        if ws and ws.connected:
-            ws.send(json.dumps(data))
-            return jsonify({"message": "Data sent successfully"}), 200
-        else:
-            return jsonify({"error": "WebSocket is not connected"}), 500
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-def gen_frames():
-    """Generator function for camera frames"""
-    output = io.BytesIO()
-    while True:
-        picam2.capture_file(output, format='jpeg')
-        frame = output.getvalue()
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-        output.seek(0)
-        output.truncate()
-
-@app.route('/camera_view')
-def camera_view():
-    """Streaming video feed from the Raspberry Pi camera"""
-    return Response(gen_frames(),
-                    mimetype='multipart/x-mixed-replace; boundary=frame')
-
-@app.route('/')
-def index():
-    return """
-    <html>
-    <body>
-    <h1>Welcome to Super Project de IDS</h1>
-    <p>Data submission and camera streaming service are available:</p>
-    <ul>
-        <li><a href="/camera_view">View Camera Stream</a></li>
-    </ul>
-    </body>
-    </html>
-    """
-
-if __name__ == '__main__':
-    # Start WebSocket connection in a separate thread
-    websocket_thread = threading.Thread(target=websocket_connect)
-    websocket_thread.daemon = True
-    websocket_thread.start()
-
-    # Run Flask app
-    app.run(host='0.0.0.0', port=5000)
+<iframe src="http://127.0.0.1:5000/camera_view" width="640" height="480"></iframe>
+</body>
+</html>

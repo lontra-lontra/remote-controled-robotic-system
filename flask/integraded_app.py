@@ -59,7 +59,8 @@ from flask import render_template
 
 @app.route('/')
 def send_test_html():
-    return "Hello"
+    return render_template('test.html')
+    
 
 # Route for sending data over WebSocket
 @app.route('/api/send-data', methods=['POST'])
