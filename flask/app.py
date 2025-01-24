@@ -2,18 +2,43 @@ import io
 import logging
 import threading
 import json
+
+# Read configuration from config.json
+with open('/home/ian/GIT/remote-controled-robotic-system/flask/config.json') as config_file:
+    config = json.load(config_file)
+
 from flask import Flask, Response, request, jsonify
-from picamera2 import Picamera2
-from picamera2.encoders import JpegEncoder
-from picamera2.outputs import FileOutput
+if (config["camera"]):
+    from picamera2 import Picamera2
+    from picamera2.encoders import JpegEncoder
+    from picamera2.outputs import FileOutput
+
+        # Camera setup
+    picam2 = Picamera2()
+    picam2.configure(picam2.create_video_configuration(main={"size": (640, 480)}))
+    picam2.start()
+
 import websocket
+
+
+import asyncio
+import websockets
+WEBSOCKET_URL = "ws://172.16.16.134:8080"
+
+
+async def listen():
+    uri = WEBSOCKET_URL
+    async with websockets.connect(uri) as websocket:
+        while True:
+            message = await websocket.recv()
+            #print(f"Received message: {message}")
+
+asyncio.get_event_loop().run_until_complete(listen())
+
 
 app = Flask(__name__)
 
-# Camera setup
-picam2 = Picamera2()
-picam2.configure(picam2.create_video_configuration(main={"size": (640, 480)}))
-picam2.start()
+
 
 # WebSocket settings
 WEBSOCKET_URL = "ws://172.16.16.134:8080"
@@ -55,10 +80,12 @@ def gen_frames():
         output.seek(0)
         output.truncate()
 
-@app.route('/video_feed')
-def video_feed():
-    return Response(gen_frames(),
-                    mimetype='multipart/x-mixed-replace; boundary=frame')
+
+if config["camera"]:
+    @app.route('/video_feed')
+    def video_feed():
+        return Response(gen_frames(),
+                        mimetype='multipart/x-mixed-replace; boundary=frame')
 
 @app.route('/camera_view')
 def camera_view():
