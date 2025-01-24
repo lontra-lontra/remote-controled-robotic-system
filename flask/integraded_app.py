@@ -58,7 +58,7 @@ def index():
 from flask import render_template
 
 @app.route('/')
-def send_test_html():
+def index():
     return render_template('test.html')
     
 
