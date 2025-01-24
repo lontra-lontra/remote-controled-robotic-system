@@ -64,7 +64,7 @@ def index():
     
 @app.route('/api/record-video', methods=['POST'])
 def record_video():
-    """Record a 10-second video."""
+    """Record a 2-second video."""
     output = io.BytesIO()
     encoder = JpegEncoder()
     file_output = FileOutput(output)
