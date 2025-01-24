@@ -78,9 +78,9 @@ def index():
 
 
         
-@app.route('/l')
+@app.route('/last_10')
 def l():
-    return last_10_received_values.str()  
+    return jsonify(last_10_received_values)
 
 
 # Route for sending data over WebSocket
