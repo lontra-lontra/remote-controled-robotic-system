@@ -29,16 +29,15 @@ def video_feed():
     return Response(gen_frames(),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
-@app.route('/')
+@app.route('/camera_view')
 def index():
     return """
     <html>
     <body>
-    <h1>Raspberry Pi Camera Stream</h1>
     <img src="/video_feed">
     </body>
     </html>
     """
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8000)
+    app.run(host='0.0.0.0', port=1981)
