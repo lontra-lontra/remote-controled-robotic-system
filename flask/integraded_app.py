@@ -46,7 +46,7 @@ def video_feed():
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
 @app.route('/camera_view')
-def index():
+def camera_view():
     return """
     <html>
     <body>
