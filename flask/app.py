@@ -78,8 +78,8 @@ def index():
 
 
         
-@app.route('/last_10_received_values')
-def last_10_received_values():
+@app.route('/l')
+def l():
     return last_10_received_values.str()  
 
 
