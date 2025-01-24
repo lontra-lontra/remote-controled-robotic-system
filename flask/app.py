@@ -62,7 +62,25 @@ def index():
     return render_template('test.html')
 
     
+@app.route('/api/record-video', methods=['POST'])
+def record_video():
+    """Record a 10-second video."""
+    output = io.BytesIO()
+    encoder = JpegEncoder()
+    file_output = FileOutput(output)
 
+    try:
+        picam2.start_recording(encoder, file_output)
+        threading.Event().wait(10)  # Record for 10 seconds
+        picam2.stop_recording()
+
+        output.seek(0)
+        video_data = output.read()
+
+        return Response(video_data, mimetype='video/jpeg')
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+        
 # Route for sending data over WebSocket
 @app.route('/api/send-data', methods=['POST'])
 def send_data():
