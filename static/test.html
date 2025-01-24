@@ -1,15 +1,20 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Response
 import websocket
 import threading
 import json
+import io
+from picamera2 import Picamera2
 
 app = Flask(__name__)
 
 # WebSocket settings
 WEBSOCKET_URL = "ws://10.21.27.145:8080"
-
-# Global WebSocket connection
 ws = None
+
+# Initialize camera
+picam2 = Picamera2()
+picam2.configure(picam2.create_video_configuration(main={"size": (640, 480)}))
+picam2.start()
 
 def websocket_connect():
     global ws
@@ -35,9 +40,42 @@ def send_data():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+def gen_frames():
+    """Generator function for camera frames"""
+    output = io.BytesIO()
+    while True:
+        picam2.capture_file(output, format='jpeg')
+        frame = output.getvalue()
+        yield (b'--frame\r\n'
+               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+        output.seek(0)
+        output.truncate()
+
+@app.route('/camera_view')
+def camera_view():
+    """Streaming video feed from the Raspberry Pi camera"""
+    return Response(gen_frames(),
+                    mimetype='multipart/x-mixed-replace; boundary=frame')
+
+@app.route('/')
+def index():
+    return """
+    <html>
+    <body>
+    <h1>Welcome to Super Project de IDS</h1>
+    <p>Data submission and camera streaming service are available:</p>
+    <ul>
+        <li><a href="/camera_view">View Camera Stream</a></li>
+    </ul>
+    </body>
+    </html>
+    """
+
 if __name__ == '__main__':
+    # Start WebSocket connection in a separate thread
     websocket_thread = threading.Thread(target=websocket_connect)
     websocket_thread.daemon = True
     websocket_thread.start()
 
+    # Run Flask app
     app.run(host='0.0.0.0', port=5000)
