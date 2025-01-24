@@ -1,0 +1,44 @@
+from flask import Flask, request, jsonify
+import websocket
+import threading
+import json
+
+app = Flask(__name__)
+
+# WebSocket settings
+WEBSOCKET_URL = "ws://10.21.27.145:8080"
+
+# Global WebSocket connection
+ws = None
+
+def websocket_connect():
+    global ws
+    try:
+        ws = websocket.create_connection(WEBSOCKET_URL)
+        print("Connected to WebSocket server")
+    except Exception as e:
+        print(f"Error connecting to WebSocket: {e}")
+
+@app.route('/api/send-data', methods=['POST'])
+def send_data():
+    global ws
+    if ws is None or not ws.connected:
+        websocket_connect()
+
+    try:
+        data = request.json
+        if ws and ws.connected:
+            ws.send(json.dumps(data))
+            return jsonify({"message": "Data sent successfully"}), 200
+        else:
+            return jsonify({"error": "WebSocket is not connected"}), 500
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+if __name__ == '__main__':
+    websocket_thread = threading.Thread(target=websocket_connect)
+    websocket_thread.daemon = True
+    websocket_thread.start()
+
+    app.run(host='0.0.0.0', port=5000)
+
