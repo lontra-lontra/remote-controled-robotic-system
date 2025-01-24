@@ -16,7 +16,7 @@ picam2.configure(picam2.create_video_configuration(main={"size": (640, 480)}))
 picam2.start()
 
 # WebSocket settings
-WEBSOCKET_URL = "ws://10.21.27.145:8080"
+WEBSOCKET_URL = "ws://172.16.16.134:8080"
 ws = None
 
 def websocket_connect():
