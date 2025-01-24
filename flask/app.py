@@ -27,6 +27,7 @@ def on_message(ws, message):
     """Callback for when a message is received from the WebSocket."""
     global last_10_received_values
     data = json.loads(message)
+    print(data)
     last_10_received_values.append(data)
     if len(last_10_received_values) > 10:
         last_10_received_values.pop(0)
@@ -78,7 +79,7 @@ def index():
 
 
         
-@app.route('/last_10')
+@app.route('/l')
 def l():
     return jsonify(last_10_received_values)
 
