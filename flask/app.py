@@ -88,4 +88,4 @@ if __name__ == '__main__':
     websocket_thread.start()
 
     # Start Flask app
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=1981)
