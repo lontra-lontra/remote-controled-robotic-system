@@ -19,12 +19,26 @@ picam2.start()
 WEBSOCKET_URL = "ws://172.16.16.134:8080"
 ws = None
 
+    # Store the last 10 received values
+last_10_received_values = []
+
+def on_message(ws, message):
+    print("Received message:", message)
+    """Callback for when a message is received from the WebSocket."""
+    global last_10_received_values
+    data = json.loads(message)
+    last_10_received_values.append(data)
+    if len(last_10_received_values) > 10:
+        last_10_received_values.pop(0)
+
+
 def websocket_connect():
     """Connect to WebSocket server."""
     global ws
     try:
         ws = websocket.create_connection(WEBSOCKET_URL)
         print("Connected to WebSocket server")
+        ws.on_message = on_message
     except Exception as e:
         print(f"Error connecting to WebSocket: {e}")
 
@@ -61,26 +75,14 @@ from flask import render_template
 def index():
     return render_template('test.html')
 
-    
-@app.route('/api/record-video', methods=['POST'])
-def record_video():
-    """Record a 2-second video."""
-    output = io.BytesIO()
-    encoder = JpegEncoder()
-    file_output = FileOutput(output)
 
-    try:
-        picam2.start_recording(encoder, file_output)
-        threading.Event().wait(10)  # Record for 10 seconds
-        picam2.stop_recording()
 
-        output.seek(0)
-        video_data = output.read()
-
-        return Response(video_data, mimetype='video/jpeg')
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
         
+@app.route('/last_10_received_values')
+def last_10_received_values():
+    return last_10_received_values.str()  
+
+
 # Route for sending data over WebSocket
 @app.route('/api/send-data', methods=['POST'])
 def send_data():
