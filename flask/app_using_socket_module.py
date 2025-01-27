@@ -3,11 +3,14 @@ import logging
 import json
 from threading import Thread
 from flask import Flask, Response, request, jsonify, render_template
-
+import os
 from our_socket_module import WebSocketClient  # Import the WebSocketClient module
 
-# Read configuration from config.json
-with open('/home/ian/GIT/remote-controled-robotic-system/flask/config.json') as config_file:
+# Read configuration from config.json]
+# Deduce the path to the config file
+current_dir = os.path.dirname(os.path.abspath(__file__))
+config_path = os.path.join(current_dir, 'config.json')
+with open(config_path) as config_file:
     config = json.load(config_file)
 
 # Camera setup
