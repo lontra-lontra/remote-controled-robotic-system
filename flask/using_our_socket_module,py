@@ -1,0 +1,33 @@
+
+from our_socket_module import WebSocketClient
+import time
+def on_message(message):
+    print(f"Recebiii: {message}")
+
+
+# Create an instance of the WebSocketClient
+client = WebSocketClient(on_message=on_message)
+
+
+while not client.connection_ready:
+    time.sleep(1)
+
+    # Now that the connection is ready, send the message
+c = 0
+while True:
+    time.sleep(1)
+    PInput = c  # Replace with actual value
+    IInput = 2.0  # Replace with actual value
+    DInput = 3.0  # Replace with actual value
+    c += 1
+    jsonData = {
+            "BlockID": "webpub 1",
+            "Signal": [
+            {"DataType": "single", "Value": [PInput]},
+            {"DataType": "single", "Value": [IInput]},
+            {"DataType": "single", "Value": [DInput]}
+            ]
+        }
+    client.send_message(jsonData)
+    #client.send_message({"message": "Hello, server!"})
+    print(str(client.last_values))

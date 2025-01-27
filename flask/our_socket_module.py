@@ -42,10 +42,6 @@ class WebSocketClient:
                     try:
                         response = await self.websocket.recv()
                         response = json.loads(response)
-                        logging.info(f"Received message from server: {response}")
-                        if "Signal" in response and len(response["Signal"]) > 0 and "Value" in response["Signal"][0]:
-                            logging.info(response["Signal"][0]["Value"])
-
                         self.on_message(response)
                         #self.last_values.append(response["Signal"][0]["Value"])
                         ##if len(self.last_values) > 10:
@@ -65,7 +61,7 @@ class WebSocketClient:
         
         async def _send():
             if self.websocket:
-                logging.info(f"Message being to server: {message}")
+                #logging.info(f"Message being to server: {message}")
                 await self.websocket.send(json.dumps(message))
                 logging.info(f"Message sent to server: {message}")
             else:
@@ -78,36 +74,3 @@ class WebSocketClient:
         except Exception as e:
             logging.error(f"Error while sending message: {e}")
 
-
-
-def on_message(message):
-    print(f"Recebiii: {message}")
-
-
-# Create an instance of the WebSocketClient
-client = WebSocketClient(on_message=on_message)
-
-# Example usage
-if __name__ == "__main__":
-    # Wait for the connection to be established
-    while not client.connection_ready:
-        time.sleep(1)
-
-    # Now that the connection is ready, send the message
-    while True:
-        time.sleep(1)
-        PInput = 11.0  # Replace with actual value
-        IInput = 2.0  # Replace with actual value
-        DInput = 3.0  # Replace with actual value
-
-        jsonData = {
-            "BlockID": "webpub 1",
-            "Signal": [
-            {"DataType": "single", "Value": [PInput]},
-            {"DataType": "single", "Value": [IInput]},
-            {"DataType": "single", "Value": [DInput]}
-            ]
-        }
-        client.send_message(jsonData)
-        #client.send_message({"message": "Hello, server!"})
-        print(str(client.last_values))
