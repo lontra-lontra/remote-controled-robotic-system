@@ -1,72 +1,41 @@
 import io
 import logging
-import threading
 import json
+from threading import Thread
+from flask import Flask, Response, request, jsonify, render_template
+import os
+from our_socket_module import WebSocketClient  # Import the WebSocketClient module
 
-# Read configuration from config.json
-with open('/home/ian/GIT/remote-controled-robotic-system/flask/config.json') as config_file:
+# Read configuration from config.json]
+# Deduce the path to the config file
+current_dir = os.path.dirname(os.path.abspath(__file__))
+config_path = os.path.join(current_dir, 'config.json')
+with open(config_path) as config_file:
     config = json.load(config_file)
 
-from flask import Flask, Response, request, jsonify
-if (config["camera"]):
+# Camera setup
+if config["camera"]:
     from picamera2 import Picamera2
-    from picamera2.encoders import JpegEncoder
-    from picamera2.outputs import FileOutput
-
-        # Camera setup
     picam2 = Picamera2()
     picam2.configure(picam2.create_video_configuration(main={"size": (640, 480)}))
     picam2.start()
 
-import websocket
-
-
-import asyncio
-import websockets
-WEBSOCKET_URL = "ws://172.16.16.134:8080"
-
-
-async def listen():
-    uri = WEBSOCKET_URL
-    async with websockets.connect(uri) as websocket:
-        while True:
-            message = await websocket.recv()
-            #print(f"Received message: {message}")
-
-asyncio.get_event_loop().run_until_complete(listen())
-
-
 app = Flask(__name__)
 
-
-
 # WebSocket settings
-WEBSOCKET_URL = "ws://172.16.16.134:8080"
-ws = None
-
-    # Store the last 10 received values
+WEBSOCKET_URL = f"ws://{config['matlab_socket_Server_IP_Adress']}:{config['matlab_socket_Server_Port']}"
 last_10_received_values = []
 
-def on_message(ws, message):
-    print("Received message:", message)
-    """Callback for when a message is received from the WebSocket."""
+# WebSocket message handler
+def handle_websocket_message(message):
+    value = message["Signal"][0]["Value"][0]
     global last_10_received_values
-    data = json.loads(message)
-    print(data)
-    last_10_received_values.append(data)
-    if len(last_10_received_values) > 10:
+    last_10_received_values.append(value)
+    if len(last_10_received_values) > 100:
         last_10_received_values.pop(0)
 
-
-def websocket_connect():
-    """Connect to WebSocket server."""
-    global ws
-    try:
-        ws = websocket.create_connection(WEBSOCKET_URL)
-        print("Connected to WebSocket server")
-        ws.on_message = on_message
-    except Exception as e:
-        print(f"Error connecting to WebSocket: {e}")
+# Create WebSocketClient instance
+websocket_client = WebSocketClient(on_message=handle_websocket_message)
 
 # Route for video streaming
 def gen_frames():
@@ -79,7 +48,6 @@ def gen_frames():
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
         output.seek(0)
         output.truncate()
-
 
 if config["camera"]:
     @app.route('/video_feed')
@@ -97,43 +65,32 @@ def camera_view():
     </html>
     """
 
-from flask import render_template
-
 @app.route('/')
 def index():
     return render_template('test.html')
 
 
+@app.route('/graph')
+def g():
+    return render_template('g.html')
 
-        
-@app.route('/l')
+@app.route('/values', methods=['GET'])
 def l():
     return jsonify(last_10_received_values)
+
 
 
 # Route for sending data over WebSocket
 @app.route('/api/send-data', methods=['POST'])
 def send_data():
     """Send data to WebSocket server."""
-    global ws
-    if ws is None or not ws.connected:
-        websocket_connect()
-
     try:
         data = request.json
-        if ws and ws.connected:
-            ws.send(json.dumps(data))
-            return jsonify({"message": "Data sent successfully"}), 200
-        else:
-            return jsonify({"error": "WebSocket is not connected"}), 500
+        websocket_client.send_message(data)
+        return jsonify({"message": "Data sent successfully"}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
-    # Start WebSocket connection in a separate thread
-    websocket_thread = threading.Thread(target=websocket_connect)
-    websocket_thread.daemon = True
-    websocket_thread.start()
-
     # Start Flask app
     app.run(host='0.0.0.0', port=1981)
