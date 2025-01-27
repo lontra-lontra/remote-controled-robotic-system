@@ -33,7 +33,6 @@ def handle_websocket_message(message):
     last_10_received_values.append(value)
     if len(last_10_received_values) > 100:
         last_10_received_values.pop(0)
-    print(last_10_received_values)
 
 # Create WebSocketClient instance
 websocket_client = WebSocketClient(on_message=handle_websocket_message)
