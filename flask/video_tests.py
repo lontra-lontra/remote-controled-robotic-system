@@ -44,29 +44,35 @@ import time
 import cv2
 import os
 
+from flask import Flask, Response, render_template_string, request
+from picamera2 import Picamera2
+import io
+import threading
+import time
+from collections import deque
+
+app = Flask(__name__)
 
 # Settings
 FRAME_BUFFER_SIZE = 300  # Number of frames to keep in buffer (e.g., 10 seconds at 30 FPS)
 FPS = 30  # Frames per second
-buffer = []
+buffer = deque(maxlen=FRAME_BUFFER_SIZE)  # Circular buffer for frames
 lock = threading.Lock()
+
+# Initialize Picamera2
+picam2 = Picamera2()
+picam2.configure(picam2.create_video_configuration(main={"size": (640, 480)}))
+picam2.start()
 
 # Function to capture frames
 def capture_frames():
     global buffer
-    camera = cv2.VideoCapture(0)  # Open the camera
     while True:
-        ret, frame = camera.read()
-        if not ret:
-            break
-
-        _, encoded_frame = cv2.imencode('.jpg', frame)
+        output = io.BytesIO()
+        picam2.capture_file(output, format='jpeg')
         with lock:
-            if len(buffer) >= FRAME_BUFFER_SIZE:
-                buffer.pop(0)  # Remove the oldest frame
-            buffer.append(encoded_frame.tobytes())
+            buffer.append(output.getvalue())
         time.sleep(1 / FPS)
-    camera.release()
 
 # Route to serve video stream
 @app.route('/video_feed')
@@ -103,6 +109,11 @@ def camera_view():
     </body>
     </html>
     """, fps=FPS)
+
+if __name__ == '__main__':
+    threading.Thread(target=capture_frames, daemon=True).start()
+    app.run(host='0.0.0.0', port=5000)
+
 
 if __name__ == '__main__':
     threading.Thread(target=capture_frames, daemon=True).start()
