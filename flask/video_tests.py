@@ -37,32 +37,77 @@ def handle_websocket_message(message):
 # Create WebSocketClient instance
 websocket_client = WebSocketClient(on_message=handle_websocket_message)
 
-def gen_frames():
-    """Generate video frames from the camera."""
+from flask import Flask, Response, render_template_string, request
+import io
+import threading
+import time
+import cv2
+import os
+
+
+# Settings
+FRAME_BUFFER_SIZE = 300  # Number of frames to keep in buffer (e.g., 10 seconds at 30 FPS)
+FPS = 30  # Frames per second
+buffer = []
+lock = threading.Lock()
+
+# Function to capture frames
+def capture_frames():
+    global buffer
+    camera = cv2.VideoCapture(0)  # Open the camera
     while True:
-        # Create a new buffer for each frame to avoid overwriting
-        output = io.BytesIO()
-        picam2.capture_file(output, format='jpeg')
-        frame = output.getvalue()
-        output.close()
+        ret, frame = camera.read()
+        if not ret:
+            break
+
+        _, encoded_frame = cv2.imencode('.jpg', frame)
+        with lock:
+            if len(buffer) >= FRAME_BUFFER_SIZE:
+                buffer.pop(0)  # Remove the oldest frame
+            buffer.append(encoded_frame.tobytes())
+        time.sleep(1 / FPS)
+    camera.release()
+
+# Route to serve video stream
+@app.route('/video_feed')
+def video_feed():
+    start_index = int(request.args.get("start", 0))
+    while True:
+        with lock:
+            if start_index < len(buffer):
+                frame = buffer[start_index]
+                start_index += 1
+            else:
+                time.sleep(0.1)
+                continue
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
-if config["camera"]:
-    @app.route('/video_feed')
-    def video_feed():
-        return Response(gen_frames(),
-                        mimetype='multipart/x-mixed-replace; boundary=frame')
-
+# HTML route
 @app.route('/camera_view')
 def camera_view():
-    return """
+    return render_template_string("""
     <html>
     <body>
-    <img src="/video_feed" style="width:100%; height:auto;">
+        <video id="videoPlayer" controls autoplay>
+            <source src="/video_feed" type="multipart/x-mixed-replace; boundary=frame">
+        </video>
+        <script>
+            const player = document.getElementById('videoPlayer');
+            player.addEventListener('seeked', function () {
+                const position = Math.round(player.currentTime * {{ fps }});
+                player.src = '/video_feed?start=' + position;
+                player.play();
+            });
+        </script>
     </body>
     </html>
-    """
+    """, fps=FPS)
+
+if __name__ == '__main__':
+    threading.Thread(target=capture_frames, daemon=True).start()
+    app.run(host='0.0.0.0', port=5000)
+
 
 @app.route('/')
 def index():
