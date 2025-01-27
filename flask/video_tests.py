@@ -41,7 +41,6 @@ from flask import Flask, Response, render_template_string, request
 import io
 import threading
 import time
-import cv2
 import os
 
 from flask import Flask, Response, render_template_string, request
