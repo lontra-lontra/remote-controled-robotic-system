@@ -58,10 +58,7 @@ FPS = 30  # Frames per second
 buffer = deque(maxlen=FRAME_BUFFER_SIZE)  # Circular buffer for frames
 lock = threading.Lock()
 
-# Initialize Picamera2
-picam2 = Picamera2()
-picam2.configure(picam2.create_video_configuration(main={"size": (640, 480)}))
-picam2.start()
+
 
 # Function to capture frames
 def capture_frames():
