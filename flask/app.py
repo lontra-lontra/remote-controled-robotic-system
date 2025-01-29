@@ -67,7 +67,7 @@ def camera_view():
 
 @app.route('/')
 def index():
-    return render_template('test.html')
+    return render_template('test1.html')
 
 
 @app.route('/graph')
