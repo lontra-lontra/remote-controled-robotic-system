@@ -26,7 +26,7 @@
             padding: 10px 20px;
         }
         .logo img {
-            width: 70px;
+            width: 100px;
             height: auto;
             margin-right: 15px;
         }
@@ -103,18 +103,18 @@
         <div class="logo">
             <img src="http://127.0.0.1:1981/static/minesparisLOGO.png" alt="LOGO">
         </div>
-        <h1>PID Controller Overview</h1>
+        <h1>Proyect IDS: Remote Controled Robotic System</h1>
     </div>
 
     <div class="main-content">
+        
         <div class="left-section">
-            <div class="top-container">
-                <video width="100%" height="100%" controls>
-                    <source src="" type="video/mp4">
-                    Votre navigateur ne supporte pas la vidéo.
-                </video>
+            <div class="iframe-container">
+                <h3>Vue de la Caméra</h3>
+                <iframe src="https://www.quatiquati.com/camera_view"></iframe>
             </div>
             <div class="vertical-resizer"></div>
+            <iframe src="http://127.0.0.1:1981/graph" width="640" height="480"></iframe>
             <div class="bottom-container">
                 <h2></h2>
                 <input type="number" id="inputP" placeholder="P (Proportionnel)">
@@ -133,10 +133,6 @@
             <h2>Contenu Défilable</h2>
             <p>Bienvenue tout le monde à notre projet sur le remote controlled robotic system.</p>
 
-            <div class="iframe-container">
-                <h3>Vue de la Caméra</h3>
-                <iframe src="https://www.quatiquati.com/camera_view"></iframe>
-            </div>
         </div>
     </div>
 
