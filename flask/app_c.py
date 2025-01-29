@@ -6,9 +6,8 @@ from flask import Flask, Response, request, jsonify
 from picamera2 import Picamera2
 from picamera2.encoders import JpegEncoder
 from picamera2.outputs import FileOutput
-import websocket
-import cv2
-import imread
+#import websocket
+from cv2 import imread
 import numpy as np
 
 
@@ -117,7 +116,7 @@ def gen_frames():
         
         BW = create_mask(frame)
         centroid = find_centroid_of_largest_contour(BW)
-        send_centroid_to_websocket(centroid)
+        #send_centroid_to_websocket(centroid)
         print("voila le centroid!!!!!!!!!!", centroid)
 
         output.seek(0)
