@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>PID Controller Overview</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chart.js/3.7.1/chart.min.js"></script>
+    <style>
+        :root {
+            --navy-blue: #1A3D5E;
+            --light-blue: #4A90E2;
+            --background-blue: #F0F4F8;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: var(--background-blue);
+        }
+        .header {
+            background-color: var(--navy-blue);
+            color: white;
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+        }
+        .logo img {
+            width: 70px;
+            height: auto;
+            margin-right: 15px;
+        }
+        .main-content {
+            display: flex;
+            flex-grow: 1;
+            overflow: hidden;
+        }
+        .left-section {
+            display: flex;
+            flex-direction: column;
+            width: 50%;
+            min-width: 200px;
+            background-color: white;
+        }
+        .right-section {
+            flex-grow: 1;
+            overflow: auto;
+            padding: 20px;
+            background-color: white;
+        }
+        .resizer {
+            width: 5px;
+            background-color: #1A3D5E;
+            cursor: ew-resize;
+            position: relative;
+        }
+        .top-container {
+            flex-grow: 1;
+            min-height: 100px;
+            background-color: black;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .vertical-resizer {
+            height: 5px;
+            background-color: #1A3D5E;
+            cursor: ns-resize;
+        }
+        .bottom-container {
+            flex-grow: 1;
+            padding: 20px;
+        }
+        .input-section input {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid var(--light-blue);
+            border-radius: 5px;
+        }
+        .iframe-container {
+            margin-top: 20px;
+            width: 100%;
+            overflow: auto;
+            border: 1px solid #ccc;
+        }
+        iframe {
+            width: 100%;
+            height: 480px;
+            border: none;
+        }
+        .footer {
+            background-color: var(--navy-blue);
+            color: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">
+            <img src="http://127.0.0.1:1981/static/minesparisLOGO.png" alt="LOGO">
+        </div>
+        <h1>PID Controller Overview</h1>
+    </div>
+
+    <div class="main-content">
+        <div class="left-section">
+            <div class="top-container">
+                <video width="100%" height="100%" controls>
+                    <source src="" type="video/mp4">
+                    Votre navigateur ne supporte pas la vidéo.
+                </video>
+            </div>
+            <div class="vertical-resizer"></div>
+            <div class="bottom-container">
+                <h2></h2>
+                <input type="number" id="inputP" placeholder="P (Proportionnel)">
+                <input type="number" id="inputI" placeholder="I (Intégral)">
+                <input type="number" id="inputD" placeholder="D (Dérivé)">
+                <button onclick="loadChart()">Charger Données</button>
+                <div class="chart-container" style="display:none;">
+                    <canvas id="dataChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="resizer"></div>
+
+        <div class="right-section">
+            <h2>Contenu Défilable</h2>
+            <p>Bienvenue tout le monde à notre projet sur le remote controlled robotic system.</p>
+
+            <div class="iframe-container">
+                <h3>Vue de la Caméra</h3>
+                <iframe src="https://www.quatiquati.com/camera_view"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <span>Solal Raymondjean</span>
+        <span>Ian Ribeiro</span>
+        <span>Davi Loucena</span>
+        <span>Yanis Marmier</span>
+        <span>Ana Corrales</span>
+    </div>
+
+    <script>
+        let isResizingHorizontal = false;
+        let isResizingVertical = false;
+        const resizer = document.querySelector('.resizer');
+        const verticalResizer = document.querySelector('.vertical-resizer');
+        const leftSection = document.querySelector('.left-section');
+        const rightSection = document.querySelector('.right-section');
+        const topContainer = document.querySelector('.top-container');
+        const bottomContainer = document.querySelector('.bottom-container');
+
+        // 🔹 Redimensionar horizontalmente (izquierda/derecha)
+        resizer.addEventListener('mousedown', (event) => {
+            isResizingHorizontal = true;
+            document.addEventListener('mousemove', resizeHorizontal);
+            document.addEventListener('mouseup', stopResize);
+        });
+
+        function resizeHorizontal(event) {
+            if (isResizingHorizontal) {
+                let newWidth = event.clientX;
+                if (newWidth < 200) newWidth = 200;  
+                if (newWidth > window.innerWidth * 0.7) newWidth = window.innerWidth * 0.7;
+                leftSection.style.width = newWidth + 'px';
+            }
+        }
+
+        // 🔹 Redimensionar verticalmente (arriba/abajo)
+        verticalResizer.addEventListener('mousedown', (event) => {
+            isResizingVertical = true;
+            document.addEventListener('mousemove', resizeVertical);
+            document.addEventListener('mouseup', stopResize);
+        });
+
+        function resizeVertical(event) {
+            if (isResizingVertical) {
+                let newHeight = event.clientY - leftSection.getBoundingClientRect().top;
+                if (newHeight < 100) newHeight = 100;
+                if (newHeight > leftSection.clientHeight - 100) newHeight = leftSection.clientHeight - 100;
+                topContainer.style.height = newHeight + 'px';
+            }
+        }
+
+        function stopResize() {
+            isResizingHorizontal = false;
+            isResizingVertical = false;
+            document.removeEventListener('mousemove', resizeHorizontal);
+            document.removeEventListener('mousemove', resizeVertical);
+            document.removeEventListener('mouseup', stopResize);
+        }
+
+        function loadChart() {
+            const chartContainer = document.querySelector('.chart-container');
+            const ctx = document.getElementById('dataChart').getContext('2d');
+            
+            chartContainer.style.display = 'block';
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['P', 'I', 'D'],
+                    datasets: [{
+                        label: 'Données',
+                        data: [
+                            document.getElementById('inputP').value || 0,
+                            document.getElementById('inputI').value || 0,
+                            document.getElementById('inputD').value || 0
+                        ],
+                        backgroundColor: ['#1A3D5E', '#4A90E2', '#87CEEB']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
