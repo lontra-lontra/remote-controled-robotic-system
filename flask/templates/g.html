@@ -3,68 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Camera Values Graph</title>
+    <title>Real-Time Chart</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <canvas id="cameraChart"></canvas>
+    <canvas id="realtimeChart" width="640" height="480"></canvas>
     <script>
-        const ctx = document.getElementById('cameraChart').getContext('2d');
-        const chart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                datasets: [
-                    {
-                        label: 'Values Camera',
-                        borderColor: 'blue',
+        let chart; // Declare the chart variable globally
+
+        function initializeChart() {
+            const ctx = document.getElementById('realtimeChart').getContext('2d');
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [], // Initialize empty labels
+                    datasets: [{
+                        label: 'Real-Time Data',
                         data: [],
-                        parsing: false,
-                        xAxisID: 'x1'
-                    },
-                    {
-                        label: 'Values Camera 2',
-                        borderColor: 'red',
-                        data: [],
-                        parsing: false,
-                        xAxisID: 'x2'
-                    }
-                ]
-            },
-            options: {
-                scales: {
-                    x1: {
-                        type: 'time',
-                        position: 'bottom'
-                    },
-                    x2: {
-                        type: 'time',
-                        position: 'top'
-                    },
-                    y: {
-                        beginAtZero: true
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1,
+                        fill: false
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            beginAtZero: true
+                        },
+                        y: {
+                            beginAtZero: true
+                        }
                     }
                 }
-            }
-        });
-
-        async function fetchData() {
-            try {
-                const response1 = await fetch('/values_camera');
-                const data1 = await response1.json();
-                const response2 = await fetch('/values_camera_2');
-                const data2 = await response2.json();
-
-                chart.data.datasets[0].data = data1.map(d => ({ x: new Date(d[1]), y: d[0] }));
-                chart.data.datasets[1].data = data2.map(d => ({ x: new Date(d[1]), y: d[0] }));
-                chart.update();
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
+            });
         }
-        
-        setInterval(fetchData, 500);
-        fetchData();
+
+        function fetchAndUpdateChart() {
+            fetch('/values')
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    if (chart) {
+                        // Update the chart's labels and data
+                        chart.data.labels = Array.from({ length: data.length }, (_, i) => i + 1);
+                        chart.data.datasets[0].data = data;
+                        chart.update(); // Re-render the chart
+                    }
+                })
+                .catch(error => console.error('Error fetching values:', error));
+        }
+
+        // Initialize the chart and set up periodic updates
+        initializeChart();
+        setInterval(fetchAndUpdateChart, 200);
     </script>
 </body>
 </html>
-
