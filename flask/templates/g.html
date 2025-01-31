@@ -39,7 +39,9 @@
         }
 
         function fetchAndUpdateChart() {
-            fetch('/values')
+            const query = new URLSearchParams(window.location.search).get('query'); // Get query parameter from the URL
+            const url = '/' + query; // Use the query parameter directly in the URL
+            fetch(url)
                 .then(response => response.json())
                 .then(data => {
                     console.log(data);
@@ -50,8 +52,8 @@
                         chart.update(); // Re-render the chart
                     }
                 })
-                .catch(error => console.error('Error fetching values:', error));
-                    }
+                .catch(error => console.error('Error fetching data:', error));
+        }
 
         // Initialize the chart and set up periodic updates
         initializeChart();
