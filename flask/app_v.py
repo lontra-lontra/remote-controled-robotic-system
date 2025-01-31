@@ -23,8 +23,9 @@ plus_proche = (232, 252)
 # Deduce the path to the config file
 current_dir = os.path.dirname(os.path.abspath(__file__))
 config_path = os.path.join(current_dir, 'config.json')
-with open(config_path) as config_file:
-    config = json.load(config_file)
+config_file = open(config_path)
+config = json.load(config_file)
+config_file.close()
 
 print(config)
 WEBSOCKET_URL = f"ws://{config['matlab_socket_Server_IP_Adress']}:{config['matlab_socket_Server_Port']}"
