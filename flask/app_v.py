@@ -32,6 +32,25 @@ WEBSOCKET_URL = f"ws://{config['matlab_socket_Server_IP_Adress']}:{config['matla
 last_10_received_values = []
 
 
+if config["camera"]:
+    picam2 = Picamera2()
+    # Initialize the camera
+    
+    
+    # Configure camera
+    config = picam2.create_preview_configuration(
+        main={"size": (640, 480)},
+        buffer_count=2
+    )
+    picam2.configure(config)
+    
+    # Start the camera
+    picam2.start()
+    
+    # Allow camera to warm up
+    time.sleep(2)
+    
+
 
 frame = None
 should_stop = False
@@ -87,24 +106,7 @@ def process_frame(frame):
 
 
 
-if config["camera"]:
-    picam2 = Picamera2()
-    # Initialize the camera
-    
-    
-    # Configure camera
-    config = picam2.create_preview_configuration(
-        main={"size": (640, 480)},
-        buffer_count=2
-    )
-    picam2.configure(config)
-    
-    # Start the camera
-    picam2.start()
-    
-    # Allow camera to warm up
-    time.sleep(2)
-    
+
 
 
 def generate_frames():
