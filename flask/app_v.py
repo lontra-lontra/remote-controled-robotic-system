@@ -96,7 +96,7 @@ def generate_frames():
     time.sleep(2)
     
     while not should_stop:
-        capture_time = time.time()
+        capture_time = time.time() - time_zero
         
         # Capture frame (en RGB)
         frame = picam2.capture_array()
