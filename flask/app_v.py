@@ -31,8 +31,8 @@ def create_mask(image):
     image_hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
     
     # Définir les seuils pour chaque canal HSV
-    lower_bound = np.array([0.071 * 255, 0.721 * 255, 0.000 * 255], dtype=np.uint8)
-    upper_bound = np.array([0.110 * 255, 0.898 * 255, 0.542 * 255], dtype=np.uint8)
+    lower_bound = np.array([0.587 * 180, 0.415 * 255, 0.284 * 255], dtype=np.uint8)
+    upper_bound = np.array([0.740 * 180, 1.000 * 255, 0.827 * 255], dtype=np.uint8)
     
     # Créer le masque binaire
     mask = cv2.inRange(image_hsv, lower_bound, upper_bound)
