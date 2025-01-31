@@ -17,9 +17,9 @@ def gen_frames():
         frame = output.getvalue()
         
         # Save the frame to a file
-        with open(os.path.join(folder_path, f'frame_{frame_number}.jpg'), 'wb') as f:
-            f.write(frame)
-        frame_number += 1
+        #with open(os.path.join(folder_path, f'frame_{frame_number}.jpg'), 'wb') as f:
+        #    f.write(frame)
+        #frame_number += 1
         
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
