@@ -11,6 +11,8 @@ from picamera2 import Picamera2
 import numpy as np
 
 
+time_zero = time.time()
+
 
 centre = (402, 271)
 plus_loing = (577, 319)
@@ -95,6 +97,7 @@ def generate_frames():
     
     while not should_stop:
         capture_time = time.time()
+        
         # Capture frame (en RGB)
         frame = picam2.capture_array()
         
@@ -221,6 +224,8 @@ def l_camera():
 # Route for sending data over WebSocket
 @app.route('/api/send-data', methods=['POST'])
 def send_data():
+    global time_zero 
+    time_zero = time.time() - time_zero
     """Send data to WebSocket server."""
     try:
         data = request.json
