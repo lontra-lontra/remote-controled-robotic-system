@@ -168,14 +168,15 @@ app = Flask(__name__)
 # WebSocket settings
 WEBSOCKET_URL = f"ws://{config['matlab_socket_Server_IP_Adress']}:{config['matlab_socket_Server_Port']}"
 last_10_received_values = []
+last_10_received_values_sensor = []
 
 # WebSocket message handler
 def handle_websocket_message(message):
     value = message["Signal"][0]["Value"][0]
-    global last_10_received_values
-    last_10_received_values.append(value)
-    if len(last_10_received_values) > 100:
-        last_10_received_values.pop(0)
+    global last_10_received_values_sensor
+    last_10_received_values_sensor.append(value)
+    if len(last_10_received_values_sensor) > 100:
+        last_10_received_values_sensor.pop(0)
 
 # Create WebSocketClient instance
 websocket_client = WebSocketClient(on_message=handle_websocket_message)
@@ -225,7 +226,7 @@ def l_camera():
 @app.route('/api/send-data', methods=['POST'])
 def send_data():
     global time_zero 
-    time_zero = time.time() - time_zero
+    time_zero = time.time()
     """Send data to WebSocket server."""
     try:
         data = request.json
