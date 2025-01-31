@@ -12,6 +12,10 @@ import numpy as np
 
 
 
+centre = (402, 271)
+plus_loing = (577, 319)
+plus_proche = (232, 252)
+
 
 
 
@@ -102,7 +106,22 @@ def generate_frames():
         # Convert frame to jpg for streaming
         ret, buffer = cv2.imencode('.jpg', processed_frame)
         frame_bytes = buffer.tobytes()
-        last_10_received_values.append(centroid[0])
+        
+
+
+        sign = np.sign(centroid[0] - centre[0]) 
+        distance = np.linalg.norm(np.array(centroid) - np.array(centre))
+
+        scale = 0.1/np.linalg.norm(np.array(plus_loing) - np.array(plus_proche))
+        
+        distance = distance * scale * sign
+
+        last_10_received_values.append(distance)
+        print("scale", scale)
+
+
+        if len(last_10_received_values) > 100:
+            last_10_received_values.pop(0)
         
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
