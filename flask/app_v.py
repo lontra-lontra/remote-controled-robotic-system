@@ -30,7 +30,7 @@ config_file.close()
 print(config)
 WEBSOCKET_URL = f"ws://{config['matlab_socket_Server_IP_Adress']}:{config['matlab_socket_Server_Port']}"
 last_10_received_values = []
-
+last_10_received_values_sensor =[]
 
 if config["camera"]:
     picam2 = Picamera2()
@@ -169,10 +169,10 @@ app = Flask(__name__)
 # WebSocket message handler
 def handle_websocket_message(message):
     value = message["Signal"][0]["Value"][0]
-    global last_10_received_values
-    last_10_received_values.append(value)
-    if len(last_10_received_values) > 100:
-        last_10_received_values.pop(0)
+    global last_10_received_values_sensor
+    last_10_received_values_sensor.append(value)
+    if len(last_10_received_values_sensor) > 100:
+        last_10_received_values_sensor.pop(0)
 
 # Create WebSocketClient instance
 websocket_client = WebSocketClient(on_message=handle_websocket_message)
@@ -208,7 +208,7 @@ def g():
 
 @app.route('/values', methods=['GET'])
 def l():
-    last_10_received_values_minus_2 = [[x[0]-2,x[1]-1] for x in last_10_received_values]
+    last_10_received_values_minus_2 = [[x[0],x[1]-2] for x in last_10_received_values]
     return jsonify(last_10_received_values_minus_2)
 
 
