@@ -41,7 +41,6 @@ websocket_client = WebSocketClient(on_message=handle_websocket_message)
 def gen_frames():
     """Generate video frames from the camera."""
     output = io.BytesIO()
-    frame_count = 0
     while True:
         picam2.capture_file(output, format='jpeg')
         frame = output.getvalue()
@@ -49,12 +48,6 @@ def gen_frames():
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
         output.seek(0)
         output.truncate()
-
-        # Save frame to /frames directory
-        frame_path = os.path.join(current_dir, 'frames', f'frame_{frame_count}.jpg')
-        with open(frame_path, 'wb') as f:
-            f.write(frame)
-        frame_count += 1
 
 if config["camera"]:
     @app.route('/video_feed')
