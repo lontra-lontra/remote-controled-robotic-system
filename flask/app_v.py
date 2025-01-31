@@ -206,11 +206,12 @@ def g():
 
 @app.route('/values', methods=['GET'])
 def l():
-    return jsonify([10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10])
+    last_10_received_values_minus_2 = [x-2 for x in last_10_received_values]
+    return jsonify(last_10_received_values_minus_2)
 
 
 @app.route('/values_camera', methods=['GET'])
-def l():
+def l_camera():
     return jsonify(last_10_received_values)
 
 
