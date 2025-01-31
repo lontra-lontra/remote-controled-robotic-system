@@ -53,6 +53,32 @@
                 .catch(error => console.error('Error fetching values:', error));
             }
 
+            function fetchAndUpdateSecondChart() {
+                fetch('/values_sensor')
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    if (chart) {
+                    // Update the second dataset's data
+                    if (chart.data.datasets.length < 2) {
+                        chart.data.datasets.push({
+                        label: 'Sensor Data',
+                        data: [],
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1,
+                        fill: false
+                        });
+                    }
+                    chart.data.datasets[1].data = data.map(item => item[0]); // Use the value for data
+                    chart.update(); // Re-render the chart
+                    }
+                })
+                .catch(error => console.error('Error fetching sensor values:', error));
+            }
+
+            // Fetch and update both charts periodically
+            setInterval(fetchAndUpdateSecondChart, 200);
+
         // Initialize the chart and set up periodic updates
         initializeChart();
         setInterval(fetchAndUpdateChart, 200);
