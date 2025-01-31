@@ -2,7 +2,6 @@ import io
 import json
 import os
 from flask import Flask, Response, request, jsonify, render_template
-from websocket_client import websocket_client
 from camera import gen_frames
 
 # Read configuration from config.json
