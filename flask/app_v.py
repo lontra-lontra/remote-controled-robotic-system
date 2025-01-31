@@ -131,7 +131,8 @@ def generate_frames():
         ret, buffer = cv2.imencode('.jpg', processed_frame)
         frame_bytes = buffer.tobytes()
         
-
+        if centroid is None:
+            centroid = last_10_received_values[-1]
 
         sign = np.sign(centroid[0] - centre[0]) 
         distance = np.linalg.norm(np.array(centroid) - np.array(centre))
