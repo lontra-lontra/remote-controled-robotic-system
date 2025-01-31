@@ -102,6 +102,7 @@ def generate_frames():
         # Convert frame to jpg for streaming
         ret, buffer = cv2.imencode('.jpg', processed_frame)
         frame_bytes = buffer.tobytes()
+        last_10_received_values.append(centroid[0])
         
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
