@@ -38,11 +38,13 @@ if config["camera"]:
     
     
     # Configure camera
-    config = picam2.create_preview_configuration(
+
+    picam2.configure(
+        picam2.create_preview_configuration(
         main={"size": (640, 480)},
         buffer_count=2
     )
-    picam2.configure(config)
+    )
     
     # Start the camera
     picam2.start()
@@ -50,6 +52,12 @@ if config["camera"]:
     # Allow camera to warm up
     time.sleep(2)
     
+
+if config["camera"]:
+    @app.route('/video_feed')
+    def video_feed():
+        return Response(generate_frames(),
+                    mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
 frame = None
@@ -177,12 +185,6 @@ websocket_client = WebSocketClient(on_message=handle_websocket_message)
 
 
 
-
-if config["camera"]:
-    @app.route('/video_feed')
-    def video_feed():
-        return Response(generate_frames(),
-                    mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
 @app.route('/camera_view')
