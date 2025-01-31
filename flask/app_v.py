@@ -9,6 +9,7 @@ import cv2
 import time
 from picamera2 import Picamera2
 import numpy as np
+import correction
 
 
 time_zero = time.time()
@@ -17,6 +18,8 @@ time_zero = time.time()
 centre = (402, 271)
 plus_loing = (577, 319)
 plus_proche = (232, 252)
+scale = 0.1/np.linalg.norm(np.array(plus_loing) - np.array(plus_proche))
+
 
 
 
@@ -111,13 +114,11 @@ def generate_frames():
         ret, buffer = cv2.imencode('.jpg', processed_frame)
         frame_bytes = buffer.tobytes()
         
+        pb= correction(centroid, centre, 1)  # Correction de la position du centroïde
 
+        sign = np.sign(pb[0]) 
+        distance = np.linalg.norm(pb)
 
-        sign = np.sign(centroid[0] - centre[0]) 
-        distance = np.linalg.norm(np.array(centroid) - np.array(centre))
-
-        scale = 0.1/np.linalg.norm(np.array(plus_loing) - np.array(plus_proche))
-        
         distance = distance * scale * sign
         last_10_received_values.append([distance, capture_time])
         print("scale", scale)
@@ -136,24 +137,6 @@ def generate_frames():
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # Read configuration from config.json]
 # Deduce the path to the config file
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -168,15 +151,14 @@ app = Flask(__name__)
 # WebSocket settings
 WEBSOCKET_URL = f"ws://{config['matlab_socket_Server_IP_Adress']}:{config['matlab_socket_Server_Port']}"
 last_10_received_values = []
-last_10_received_values_sensor = []
 
 # WebSocket message handler
 def handle_websocket_message(message):
     value = message["Signal"][0]["Value"][0]
-    global last_10_received_values_sensor
-    last_10_received_values_sensor.append(value)
-    if len(last_10_received_values_sensor) > 100:
-        last_10_received_values_sensor.pop(0)
+    global last_10_received_values
+    last_10_received_values.append(value)
+    if len(last_10_received_values) > 100:
+        last_10_received_values.pop(0)
 
 # Create WebSocketClient instance
 websocket_client = WebSocketClient(on_message=handle_websocket_message)
@@ -212,7 +194,7 @@ def g():
 
 @app.route('/values', methods=['GET'])
 def l():
-    last_10_received_values_minus_2 = [[x[0]-2,x[1]] for x in last_10_received_values]
+    last_10_received_values_minus_2 = [[x[0],x[1]] for x in last_10_received_values]
     return jsonify(last_10_received_values_minus_2)
 
 
@@ -226,7 +208,7 @@ def l_camera():
 @app.route('/api/send-data', methods=['POST'])
 def send_data():
     global time_zero 
-    time_zero = time.time()
+    time_zero = time.time() - time_zero
     """Send data to WebSocket server."""
     try:
         data = request.json
