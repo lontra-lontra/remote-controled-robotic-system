@@ -225,7 +225,7 @@ def l_camera():
 @app.route('/api/send-data', methods=['POST'])
 def send_data():
     global time_zero 
-    time_zero = time.time() - time_zero
+    time_zero = time.time()
     """Send data to WebSocket server."""
     try:
         data = request.json
