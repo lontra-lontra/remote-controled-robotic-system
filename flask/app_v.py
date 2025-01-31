@@ -19,6 +19,8 @@ plus_loing = (577, 319)
 plus_proche = (232, 252)
 
 
+
+
 # Read configuration from config.json]
 # Deduce the path to the config file
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -56,6 +58,19 @@ if config["camera"]:
 
 frame = None
 should_stop = False
+
+def correction(pos, centre_roue):
+    """ Prend la position mesuree, la position de la roue et rend l'ecart a l'equilibre (non renormee). On suppose que le centre de rotation est 100 pixels plus bas"""
+    centre_roue = np.array(centre_roue)
+    pb = np.array(pos - centre_roue)
+    centre_rot = np.array([centre_roue[0], centre_roue[1]-100])
+    vec = np.array(centre_roue-centre_rot)
+    theta = np.arctan(pb[1]/pb[0])
+    rot = np.array([[np.cos(theta), -np.sin(theta)], [np.sin(theta), np.cos(theta)]])
+    centre_roue = centre_rot +rot.dot(vec)
+    pb = np.array(pos - centre_roue)
+    return pb
+
 
 def create_mask(image):
     """Applique un masque basé sur des seuils HSV et retourne le masque binaire."""
@@ -135,8 +150,8 @@ def generate_frames():
             centroid = last_10_received_values[-1]
 
         sign = np.sign(centroid[0] - centre[0]) 
-        distance = np.linalg.norm(np.array(centroid) - np.array(centre))
-
+        pb = correction(centroid, centre, 1)
+        distance = np.linalg.norm(pb)
         scale = 0.1/np.linalg.norm(np.array(plus_loing) - np.array(plus_proche))
         
         distance = distance * scale * sign
