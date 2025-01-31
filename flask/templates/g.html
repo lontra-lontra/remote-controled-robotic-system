@@ -3,50 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min"></script>
     <title>Live Camera Values</title>
 </head>
 <body>
-    <canvas id="chart"></canvas>
+    <div id="chart"></div>
     <script>
-        const ctx = document.getElementById('chart').getContext('2d');
-        const chart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                datasets: [
-                    {
-                        label: 'Camera 1',
-                        borderColor: 'blue',
-                        data: [],
-                        parsing: false,
-                        xAxisID: 'x1'
-                    },
-                    {
-                        label: 'Camera 2',
-                        borderColor: 'red',
-                        data: [],
-                        parsing: false,
-                        xAxisID: 'x2'
-                    }
-                ]
-            },
-            options: {
-                scales: {
-                    x1: {
-                        type: 'time',
-                        position: 'bottom',
-                    },
-                    x2: {
-                        type: 'time',
-                        position: 'top',
-                    },
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-        
         async function fetchData() {
             try {
                 const res1 = await fetch('/values_camera');
@@ -54,9 +16,23 @@
                 const res2 = await fetch('/values_camera');
                 const data2 = await res2.json();
 
-                chart.data.datasets[0].data = data1.map(d => ({ x: new Date(d[1]), y: d[0] }));
-                chart.data.datasets[1].data = data2.map(d => ({ x: new Date(d[1]), y: d[0] }));
-                chart.update();
+                const trace1 = {
+                    x: data1.map(d => new Date(d[1])),
+                    y: data1.map(d => d[0]),
+                    mode: 'lines',
+                    name: 'Camera 1',
+                    line: { color: 'blue' }
+                };
+
+                const trace2 = {
+                    x: data2.map(d => new Date(d[1])),
+                    y: data2.map(d => d[0]),
+                    mode: 'lines',
+                    name: 'Camera 2',
+                    line: { color: 'red' }
+                };
+
+                Plotly.newPlot('chart', [trace1, trace2], { title: 'Live Camera Values' });
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
