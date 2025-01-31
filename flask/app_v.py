@@ -7,6 +7,7 @@ import os
 from our_socket_module import WebSocketClient  # Import the WebSocketClient module
 import cv2
 import time
+from picamera2 import Picamera2
 
 
 
