@@ -26,16 +26,18 @@ frame = None
 should_stop = False
 
 def create_mask(image):
-    """Applique un masque basé sur des seuils HSV et retourne le masque binaire."""
-    # Convertir l'image en BGR -> HSV
+    """Applique un masque basé sur des seuils HSV et retourne le masque binaire ainsi que l'image masquée."""
+    # Convertir l'image de BGR à HSV
     image_hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
     
     # Définir les seuils pour chaque canal HSV
-    lower_bound = np.array([0.071 * 255, 0.721 * 255, 0.000 * 255], dtype=np.uint8)
-    upper_bound = np.array([0.110 * 255, 0.898 * 255, 0.542 * 255], dtype=np.uint8)
+    lower_bound = np.array([0.587 * 180, 0.415 * 255, 0.284 * 255], dtype=np.uint8)
+    upper_bound = np.array([0.740 * 180, 1.000 * 255, 0.827 * 255], dtype=np.uint8)
     
     # Créer le masque binaire
     mask = cv2.inRange(image_hsv, lower_bound, upper_bound)
+    
+    
     return mask
 
 def find_centroid_of_largest_contour(mask):
@@ -108,16 +110,14 @@ def generate_frames():
         frame_bytes = buffer.tobytes()
         
 
-
-        sign = np.sign(centroid[0] - centre[0]) 
-        distance = np.linalg.norm(np.array(centroid) - np.array(centre))
-
-        scale = 0.1/np.linalg.norm(np.array(plus_loing) - np.array(plus_proche))
-        
-        distance = distance * scale * sign
-
-        last_10_received_values.append(distance)
-        print("scale", scale)
+        if centroid is not None:
+            sign = np.sign(centroid[0] - centre[0]) 
+            distance = np.linalg.norm(np.array(centroid) - np.array(centre))
+            scale = 0.1/np.linalg.norm(np.array(plus_loing) - np.array(plus_proche))
+            distance = distance * scale * sign
+            last_10_received_values.append(distance)
+        else : 
+            last_10_received_values.append(last_10_received_values[-1])
 
 
         if len(last_10_received_values) > 100:
@@ -128,23 +128,6 @@ def generate_frames():
     
     # Cleanup
     picam2.stop()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -206,7 +189,7 @@ def g():
 
 @app.route('/values', methods=['GET'])
 def l():
-    last_10_received_values_minus_2 = [x-2 for x in last_10_received_values]
+    last_10_received_values_minus_2 = [x-0.02 for x in last_10_received_values]
     return jsonify(last_10_received_values_minus_2)
 
 
