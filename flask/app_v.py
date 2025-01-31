@@ -26,6 +26,9 @@ config_path = os.path.join(current_dir, 'config.json')
 with open(config_path) as config_file:
     config = json.load(config_file)
 
+print(config)
+WEBSOCKET_URL = f"ws://{config['matlab_socket_Server_IP_Adress']}:{config['matlab_socket_Server_Port']}"
+last_10_received_values = []
 
 
 
@@ -156,8 +159,7 @@ def generate_frames():
 app = Flask(__name__)
 
 # WebSocket settings
-WEBSOCKET_URL = f"ws://{config['matlab_socket_Server_IP_Adress']}:{config['matlab_socket_Server_Port']}"
-last_10_received_values = []
+
 
 # WebSocket message handler
 def handle_websocket_message(message):
