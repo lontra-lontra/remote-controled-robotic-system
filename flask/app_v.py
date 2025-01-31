@@ -9,7 +9,6 @@ import cv2
 import time
 from picamera2 import Picamera2
 import numpy as np
-import correction
 
 
 time_zero = time.time()
@@ -18,8 +17,6 @@ time_zero = time.time()
 centre = (402, 271)
 plus_loing = (577, 319)
 plus_proche = (232, 252)
-scale = 0.1/np.linalg.norm(np.array(plus_loing) - np.array(plus_proche))
-
 
 
 
@@ -99,7 +96,7 @@ def generate_frames():
     time.sleep(2)
     
     while not should_stop:
-        capture_time = time.time() - time_zero
+        capture_time = time.time()
         
         # Capture frame (en RGB)
         frame = picam2.capture_array()
@@ -114,11 +111,13 @@ def generate_frames():
         ret, buffer = cv2.imencode('.jpg', processed_frame)
         frame_bytes = buffer.tobytes()
         
-        pb= correction(centroid, centre, 1)  # Correction de la position du centroïde
 
-        sign = np.sign(pb[0]) 
-        distance = np.linalg.norm(pb)
 
+        sign = np.sign(centroid[0] - centre[0]) 
+        distance = np.linalg.norm(np.array(centroid) - np.array(centre))
+
+        scale = 0.1/np.linalg.norm(np.array(plus_loing) - np.array(plus_proche))
+        
         distance = distance * scale * sign
         last_10_received_values.append([distance, capture_time])
         print("scale", scale)
@@ -134,6 +133,10 @@ def generate_frames():
     
     # Cleanup
     picam2.stop()
+
+
+
+
 
 
 
@@ -194,7 +197,7 @@ def g():
 
 @app.route('/values', methods=['GET'])
 def l():
-    last_10_received_values_minus_2 = [[x[0],x[1]] for x in last_10_received_values]
+    last_10_received_values_minus_2 = [[x[0]-2,x[1]] for x in last_10_received_values]
     return jsonify(last_10_received_values_minus_2)
 
 
