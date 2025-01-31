@@ -189,7 +189,7 @@ def g():
 
 @app.route('/values', methods=['GET'])
 def l():
-    last_10_received_values_minus_2 = [x-2 for x in last_10_received_values]
+    last_10_received_values_minus_2 = [x-0.02 for x in last_10_received_values]
     return jsonify(last_10_received_values_minus_2)
 
 
