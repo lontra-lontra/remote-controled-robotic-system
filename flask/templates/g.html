@@ -37,7 +37,10 @@
                 options: {
                     scales: {
                         x: {
-                            beginAtZero: true
+                            type: 'time',
+                            time: {
+                                unit: 'second'
+                            }
                         },
                         y: {
                             beginAtZero: true
@@ -57,12 +60,21 @@
                 console.log('Camera Data:', cameraData);
                 
                 if (chart) {
-                    // Use sensor data for labels to keep both datasets aligned
-                    chart.data.labels = sensorData.map(item => item[1]);
+                    // Merge and sort time values
+                    const allTimes = [...sensorData.map(item => item[1]), ...cameraData.map(item => item[1])];
+                    const uniqueSortedTimes = [...new Set(allTimes)].sort();
                     
-                    // Update dataset values
-                    chart.data.datasets[0].data = sensorData.map(item => item[0]);
-                    chart.data.datasets[1].data = cameraData.map(item => item[0]);
+                    chart.data.labels = uniqueSortedTimes;
+                    
+                    chart.data.datasets[0].data = uniqueSortedTimes.map(time => {
+                        const entry = sensorData.find(item => item[1] === time);
+                        return entry ? entry[0] : null;
+                    });
+                    
+                    chart.data.datasets[1].data = uniqueSortedTimes.map(time => {
+                        const entry = cameraData.find(item => item[1] === time);
+                        return entry ? entry[0] : null;
+                    });
                     
                     chart.update(); // Re-render the chart
                 }
