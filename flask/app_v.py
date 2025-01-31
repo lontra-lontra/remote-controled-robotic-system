@@ -108,16 +108,14 @@ def generate_frames():
         frame_bytes = buffer.tobytes()
         
 
-
-        sign = np.sign(centroid[0] - centre[0]) 
-        distance = np.linalg.norm(np.array(centroid) - np.array(centre))
-
-        scale = 0.1/np.linalg.norm(np.array(plus_loing) - np.array(plus_proche))
-        
-        distance = distance * scale * sign
-
-        last_10_received_values.append(distance)
-        print("scale", scale)
+        if centroid is not None:
+            sign = np.sign(centroid[0] - centre[0]) 
+            distance = np.linalg.norm(np.array(centroid) - np.array(centre))
+            scale = 0.1/np.linalg.norm(np.array(plus_loing) - np.array(plus_proche))
+            distance = distance * scale * sign
+            last_10_received_values.append(distance)
+        else : 
+            last_10_received_values.append(last_10_received_values[-1])
 
 
         if len(last_10_received_values) > 100:
@@ -128,23 +126,6 @@ def generate_frames():
     
     # Cleanup
     picam2.stop()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
