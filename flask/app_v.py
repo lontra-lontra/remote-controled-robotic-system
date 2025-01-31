@@ -206,6 +206,11 @@ def g():
 
 @app.route('/values', methods=['GET'])
 def l():
+    return jsonify([10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10])
+
+
+@app.route('/values_camera', methods=['GET'])
+def l():
     return jsonify(last_10_received_values)
 
 
