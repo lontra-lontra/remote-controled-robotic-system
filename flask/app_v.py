@@ -53,12 +53,6 @@ if config["camera"]:
     time.sleep(2)
     
 
-if config["camera"]:
-    @app.route('/video_feed')
-    def video_feed():
-        return Response(generate_frames(),
-                    mimetype='multipart/x-mixed-replace; boundary=frame')
-
 
 frame = None
 should_stop = False
@@ -183,6 +177,12 @@ def handle_websocket_message(message):
 # Create WebSocketClient instance
 websocket_client = WebSocketClient(on_message=handle_websocket_message)
 
+
+if config["camera"]:
+    @app.route('/video_feed')
+    def video_feed():
+        return Response(generate_frames(),
+                    mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
 
