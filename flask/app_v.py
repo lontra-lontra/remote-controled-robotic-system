@@ -224,8 +224,7 @@ def g():
 
 @app.route('/values', methods=['GET'])
 def l():
-    last_10_received_values_minus_2 = [[x[0]+0.1,x[1]+20] for x in last_10_received_values]
-    return jsonify(last_10_received_values_minus_2)
+    return jsonify(last_10_received_values_sensor)
 
 
 @app.route('/values_camera', methods=['GET'])

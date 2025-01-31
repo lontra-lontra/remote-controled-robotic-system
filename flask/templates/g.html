@@ -12,13 +12,14 @@
         let chart; // Declare the chart variable globally
 
         function initializeChart() {
+            const query = new URLSearchParams(window.location.search).get('query'); 
             const ctx = document.getElementById('realtimeChart').getContext('2d');
             chart = new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: [], // Initialize empty labels
                     datasets: [{
-                        label: 'Real-Time Data',
+                        label: 'Real-Time Data of' + query,
                         data: [],
                         borderColor: 'rgba(75, 192, 192, 1)',
                         borderWidth: 1,
