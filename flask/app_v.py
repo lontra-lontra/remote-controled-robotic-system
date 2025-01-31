@@ -186,7 +186,7 @@ app = Flask(__name__)
 def handle_websocket_message(message):
     value = message["Signal"][0]["Value"][0]
     global last_10_received_values_sensor
-    last_10_received_values_sensor.append([value, time.time()-time_zero])
+    last_10_received_values_sensor.append([value/1000, time.time()-time_zero])
     if len(last_10_received_values_sensor) > 100:
         last_10_received_values_sensor.pop(0)
 
