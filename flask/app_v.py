@@ -85,11 +85,6 @@ def process_frame(frame):
 
 if config["camera"]:
     picam2 = Picamera2()
-
-
-def generate_frames():
-    global frame, should_stop
-    
     # Initialize the camera
     
     
@@ -106,6 +101,12 @@ def generate_frames():
     # Allow camera to warm up
     time.sleep(2)
     
+
+
+def generate_frames():
+    global frame, should_stop
+    
+
     while not should_stop:
         capture_time = time.time() - time_zero
         
