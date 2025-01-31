@@ -19,7 +19,12 @@ plus_loing = (577, 319)
 plus_proche = (232, 252)
 
 
-
+# Read configuration from config.json]
+# Deduce the path to the config file
+current_dir = os.path.dirname(os.path.abspath(__file__))
+config_path = os.path.join(current_dir, 'config.json')
+with open(config_path) as config_file:
+    config = json.load(config_file)
 
 
 
@@ -76,11 +81,17 @@ def process_frame(frame):
         
     return frame_bgr, mask, centroid
 
+
+
+if config["camera"]:
+    picam2 = Picamera2()
+
+
 def generate_frames():
     global frame, should_stop
     
     # Initialize the camera
-    picam2 = Picamera2()
+    
     
     # Configure camera
     config = picam2.create_preview_configuration(
@@ -138,14 +149,6 @@ def generate_frames():
 
 
 
-
-
-# Read configuration from config.json]
-# Deduce the path to the config file
-current_dir = os.path.dirname(os.path.abspath(__file__))
-config_path = os.path.join(current_dir, 'config.json')
-with open(config_path) as config_file:
-    config = json.load(config_file)
 
 
 
