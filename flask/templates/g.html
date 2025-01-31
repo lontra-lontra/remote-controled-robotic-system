@@ -39,18 +39,27 @@
         }
 
         function fetchAndUpdateChart() {
-            fetch('/values')
+            fetch('/values_camera')
                 .then(response => response.json())
                 .then(data => {
                     console.log(data);
                     if (chart) {
-                        // Update the chart's labels and data
-                        chart.data.labels = Array.from({ length: data.length }, (_, i) => i + 1);
-                        chart.data.datasets[0].data = data;
+                        // Update the chart's data for the second dataset
+                        if (chart.data.datasets.length < 2) {
+                            chart.data.datasets.push({
+                                label: 'Camera Data',
+                                data: data,
+                                borderColor: 'rgba(255, 99, 132, 1)',
+                                borderWidth: 1,
+                                fill: false
+                            });
+                        } else {
+                            chart.data.datasets[1].data = data;
+                        }
                         chart.update(); // Re-render the chart
                     }
                 })
-                .catch(error => console.error('Error fetching values:', error));
+                .catch(error => console.error('Error fetching camera values:', error));
         }
 
         // Initialize the chart and set up periodic updates
