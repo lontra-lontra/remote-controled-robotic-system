@@ -16,12 +16,6 @@ import time
 
 
 
-
-
-
-
-
-
 frame = None
 should_stop = False
 
@@ -140,12 +134,7 @@ config_path = os.path.join(current_dir, 'config.json')
 with open(config_path) as config_file:
     config = json.load(config_file)
 
-# Camera setup
-if config["camera"]:
-    from picamera2 import Picamera2
-    picam2 = Picamera2()
-    picam2.configure(picam2.create_video_configuration(main={"size": (640, 480)}))
-    picam2.start()
+
 
 app = Flask(__name__)
 
@@ -164,49 +153,7 @@ def handle_websocket_message(message):
 # Create WebSocketClient instance
 websocket_client = WebSocketClient(on_message=handle_websocket_message)
 
-# Route for video streaming
-def generate_frames():
-    global frame, should_stop
-    
-    # Initialize the camera
-    picam2 = Picamera2()
-    
-    # Configure camera
-    config = picam2.create_preview_configuration(
-        main={"size": (640, 480)},
-        buffer_count=2
-    )
-    picam2.configure(config)
-    
-    # Start the camera
-    picam2.start()
-    
-    # Allow camera to warm up
-    time.sleep(2)
-    
-    while not should_stop:
-        # Capture frame (en RGB)
-        frame = picam2.capture_array()
-        
-        # Traiter l'image
-        processed_frame, mask, centroid = process_frame(frame)
-        
-        # Émettre les coordonnées du centroïde via WebSocket si trouvé
-        if centroid is not None:
-            socketio.emit('centroid_data', {
-                'x': centroid[0],
-                'y': centroid[1]
-            })
-        
-        # Convert frame to jpg for streaming
-        ret, buffer = cv2.imencode('.jpg', processed_frame)
-        frame_bytes = buffer.tobytes()
-        
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
-    
-    # Cleanup
-    picam2.stop()
+
 
 
 if config["camera"]:
