@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>PID Controller Overview</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chart.js/3.7.1/chart.min.js"></script>
+    <style>
+        :root {
+            --navy-blue: #1A3D5E;
+            --light-blue: #4A90E2;
+            --background-blue: #F0F4F8;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: var(--background-blue);
+        }
+        .header {
+            background-color: var(--navy-blue);
+            color: white;
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+        }
+        .logo img {
+            width: 100px;
+            height: auto;
+            margin-right: 15px;
+        }
+        .main-content {
+            display: flex;
+            flex-grow: 1;
+            overflow: hidden;
+        }
+        .left-section {
+            display: flex;
+            flex-direction: column;
+            width: 50%;
+            min-width: 200px;
+            background-color: white;
+        }
+        .right-section {
+            flex-grow: 1;
+            overflow: auto;
+            padding: 20px;
+            background-color: white;
+        }
+        .bottom-container {
+            flex-grow: 1;
+            padding: 20px;
+        }
+        .iframe-container {
+            margin-top: 20px;
+            width: 100%;
+            overflow: auto;
+            border: 1px solid #ccc;
+        }
+        iframe {
+            width: 100%;
+            height: 480px;
+            border: none;
+        }
+        .footer {
+            background-color: var(--navy-blue);
+            color: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">
+            <img src="http://127.0.0.1:1981/static/minesparisLOGO.png" alt="LOGO">
+        </div>
+        <h1>Proyect IDS: Remote Controled Robotic System</h1>
+    </div>
+
+    <div class="main-content">
+        <div class="left-section">
+            <div class="iframe-container">
+                <h3>Vue de la Caméra</h3>
+                <iframe src="http://127.0.0.1:1981/camera_view"></iframe>
+                <iframe src="https://www.quatiquati.com/camera_view"></iframe>
+            </div>
+            <iframe src="http://127.0.0.1:1981/graph" width="640" height="480"></iframe>
+            <div class="bottom-container">
+                <h2>Ici le PID:</h2>
+                <input type="text" id="PInput" placeholder="P (Proportionnel)">
+                <input type="text" id="IInput" placeholder="I (Intégral)">
+                <input type="text" id="DInput" placeholder="D (Dérivé)">
+                <button onclick="sendMessage()">Envoyer</button>
+                <button onclick="recordVideo()">Enregistrer Vidéo</button>
+            </div>
+        </div>
+        <div class="right-section">
+            <h2>Contenu Défilable</h2>
+            <p>Bienvenue tout le monde à notre projet sur le remote controlled robotic system.</p>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <span>Solal Raymondjean</span>
+        <span>Ian Ribeiro</span>
+        <span>Davi Loucena</span>
+        <span>Yanis Marmier</span>
+        <span>Ana Corrales</span>
+    </div>
+
+    <script>
+        async function sendMessage() {
+            const PInput = document.getElementById("PInput").value;
+            const IInput = document.getElementById("IInput").value;
+            const DInput = document.getElementById("DInput").value;
+
+            const jsonData = {
+                "BlockID": "webpub 1",
+                "Signal": [
+                    { "DataType": "single", "Value": [PInput] },
+                    { "DataType": "single", "Value": [IInput] },
+                    { "DataType": "single", "Value": [DInput] }
+                ]
+            };
+
+            try {
+                const response = await fetch('/api/send-data', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(jsonData)
+                });
+
+                if (response.ok) {
+                    console.log('Données envoyées avec succès');
+                } else {
+                    console.error('Erreur lors de l’envoi des données:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Erreur:', error);
+            }
+        }
+
+        async function recordVideo() {
+            try {
+                const response = await fetch('/api/record-video', {
+                    method: 'POST'
+                });
+
+                if (response.ok) {
+                    console.log('Enregistrement vidéo lancé avec succès');
+                } else {
+                    console.error('Erreur lors du lancement de l’enregistrement:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Erreur:', error);
+            }
+        }
+    </script>
+</body>
+</html>
