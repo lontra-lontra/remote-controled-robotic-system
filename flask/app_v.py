@@ -253,26 +253,6 @@ def l_camera():
 def l_motor():
     return jsonify(last_10_received_values_motor)
 
-@app.route('/min_and_max_times', methods=['GET'])
-def min_and_max_times():
-    min_times = [
-        last_10_received_values[0][1] if last_10_received_values else None,
-        last_10_received_values_sensor[0][1] if last_10_received_values_sensor else None,
-        last_10_received_values_motor[0][1] if last_10_received_values_motor else None
-    ]
-    max_times = [
-        last_10_received_values[-1][1] if last_10_received_values else None,
-        last_10_received_values_sensor[-1][1] if last_10_received_values_sensor else None,
-        last_10_received_values_motor[-1][1] if last_10_received_values_motor else None
-    ]
-
-    min_time = max([t for t in min_times if time is not None])
-    max_time = max([t for t in max_times if time is not None])
-
-    return jsonify({
-        "min_time": min_time,
-        "max_time": max_time
-    })
 
 
 # Route for sending data over WebSocket
