@@ -136,30 +136,35 @@ def generate_frames():
         # Capture frame (en RGB)
         frame = picam2.capture_array()
         
-        # Traiter l'image
-        processed_frame, mask, centroid = process_frame(frame)
-        
+        if (0 == 1):
+            # Traiter l'image
+            processed_frame, mask, centroid = process_frame(frame)
+            
 
-        
-        # Convert frame to jpg for streaming
-        ret, buffer = cv2.imencode('.jpg', processed_frame)
-        frame_bytes = buffer.tobytes()
-        
-        if centroid is None:
-            centroid = last_10_received_values[-1]
+            
+            # Convert frame to jpg for streaming
+            ret, buffer = cv2.imencode('.jpg', processed_frame)
+            frame_bytes = buffer.tobytes()
+            
+            if centroid is None:
+                centroid = last_10_received_values[-1]
 
-        sign = np.sign(centroid[0] - centre[0]) 
-        pb = correction(centroid, centre)
-        distance = np.linalg.norm(pb)
-        scale = 0.1/np.linalg.norm(np.array(plus_loing) - np.array(plus_proche))
-        
-        distance = distance * scale * sign
-        last_10_received_values.append([distance, capture_time])
+            sign = np.sign(centroid[0] - centre[0]) 
+            pb = correction(centroid, centre)
+            distance = np.linalg.norm(pb)
+            scale = 0.1/np.linalg.norm(np.array(plus_loing) - np.array(plus_proche))
+            
+            distance = distance * scale * sign
+            last_10_received_values.append([distance, capture_time])
 
 
-        if len(last_10_received_values) > 100:
-            last_10_received_values.pop(0)
-        
+            if len(last_10_received_values) > 100:
+                last_10_received_values.pop(0)
+        else:
+            frame_bytes = frame
+
+
+
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
 
