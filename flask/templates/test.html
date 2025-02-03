@@ -91,25 +91,9 @@
     <input type="text" id="DInput" placeholder="Enter value for D">
     <br>
     <button onclick="sendMessage()">Send</button>
-    <button onclick="recordVideo()">Record Video</button>
 
-    <script>
-        async function recordVideo() {
-            try {
-                const response = await fetch('/api/record-video', {
-                    method: 'POST'
-                });
 
-                if (response.ok) {
-                    console.log('Video recording started successfully');
-                } else {
-                    console.error('Error starting video recording:', response.statusText);
-                }
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        }
-    </script>
+
     <script>
         async function sendMessage() {
             const PInput = document.getElementById("PInput").value;
@@ -144,10 +128,11 @@
     </script>
 
 <iframe src="https://www.quatiquati.com/camera_view" width="640" height="480"></iframe>
-<iframe src="http://127.0.0.1:1981/camera_view" width="640" height="480"></iframe>
 
-<iframe src="http://127.0.0.1:1981/graph?query=values_camera" width="640" height="480"></iframe>
-<iframe src="http://127.0.0.1:1981/graph?query=values" width="640" height="480"></iframe>
+
+<iframe src="https://www.quatiquati.com/graph?query=values_camera" width="640" height="480"></iframe>
+
+<iframe src="https://www.quatiquati.com/graph?query=values_camera" width="640" height="480"></iframe>
 
 
 </body>
