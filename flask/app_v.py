@@ -136,7 +136,7 @@ def generate_frames():
         # Capture frame (en RGB)
         frame = picam2.capture_array()
         
-        if (0 == 1):
+        if (1 == 1):
             # Traiter l'image
             processed_frame, mask, centroid = process_frame(frame)
             
