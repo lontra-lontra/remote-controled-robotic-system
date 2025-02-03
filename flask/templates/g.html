@@ -32,14 +32,8 @@
                             type: 'linear',
                             title: { display: true, text: 'Time' },
                             beginAtZero: true,
-                            min: function(context) {
-                                const minTime = Math.min(...context.chart.data.labels.map(label => parseFloat(label)));
-                                return minTime * 2;
-                            },
-                            max: function(context) {
-                                const maxTime = Math.max(...context.chart.data.labels.map(label => parseFloat(label)));
-                                return maxTime * 2;
-                            }
+                            min: 0,
+                            max: 12
                         },
                     },
                         y: {
