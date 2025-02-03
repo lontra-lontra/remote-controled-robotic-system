@@ -154,7 +154,8 @@ def generate_frames():
             distance = np.linalg.norm(pb)
             scale = 0.1/np.linalg.norm(np.array(plus_loing) - np.array(plus_proche))
             
-            distance = distance * scale * sign
+            distance = distance * scale * sign 
+            distance = distance*1000
             last_10_received_values.append([distance, capture_time])
 
 
