@@ -245,7 +245,6 @@ def g():
 def l():
     return jsonify(last_10_received_values_sensor)
 
-
 @app.route('/values_camera', methods=['GET'])
 def l_camera():
     return jsonify(last_10_received_values)
@@ -253,6 +252,11 @@ def l_camera():
 @app.route('/values_motor', methods=['GET'])
 def l_motor():
     return jsonify(last_10_received_values_motor)
+
+@app.route('/min_and_max_times', methods=['GET'])
+def min_and_max_times():
+    return jsonify({"min_time": min([last_10_received_values[0],last_10_received_values_sensor[0], last_10_received_values_motor[0] ]),
+                     "max_time": max([last_10_received_values[-1],last_10_received_values_sensor[-1], last_10_received_values_motor[-1] ])})
 
 
 
