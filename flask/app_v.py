@@ -266,8 +266,8 @@ def min_and_max_times():
         last_10_received_values_motor[-1][1] if last_10_received_values_motor else None
     ]
 
-    min_time = max([time for time in min_times if time is not None])
-    max_time = max([time for time in max_times if time is not None])
+    min_time = max([t for t in min_times if time is not None])
+    max_time = max([t for t in max_times if time is not None])
 
     return jsonify({
         "min_time": min_time,
