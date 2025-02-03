@@ -191,7 +191,11 @@ app = Flask(__name__)
 
 # WebSocket message handler
 def handle_websocket_message(message):
+    print("json:" + str(message))
     value = message["Signal"][0]["Value"][0]
+    motor_value = message["Signal"][0]["Value"][0]
+    print("motor value:"+ motor_value)
+    print("value:"+ value)
     global last_10_received_values_sensor
     last_10_received_values_sensor.append([value, time.time()-time_zero])
     if len(last_10_received_values_sensor) > 100:
