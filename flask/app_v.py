@@ -139,8 +139,7 @@ def generate_frames():
         # Traiter l'image
         processed_frame, mask, centroid = process_frame(frame)
         
-        if centroid is not None:
-            print("centroid", centroid)
+
         
         # Convert frame to jpg for streaming
         ret, buffer = cv2.imencode('.jpg', processed_frame)
@@ -156,7 +155,6 @@ def generate_frames():
         
         distance = distance * scale * sign
         last_10_received_values.append([distance, capture_time])
-        print("scale", scale)
 
 
         if len(last_10_received_values) > 100:
@@ -186,7 +184,7 @@ app = Flask(__name__)
 def handle_websocket_message(message):
     value = message["Signal"][0]["Value"][0]
     global last_10_received_values_sensor
-    last_10_received_values_sensor.append([value/1000, time.time()-time_zero])
+    last_10_received_values_sensor.append([value, time.time()-time_zero])
     if len(last_10_received_values_sensor) > 100:
         last_10_received_values_sensor.pop(0)
 
