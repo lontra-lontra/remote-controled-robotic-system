@@ -193,20 +193,20 @@ app = Flask(__name__)
 
 # WebSocket message handler
 def handle_websocket_message(message):
-    value = message["Signal"][0]["Value"][0]
-    motor_value = message["Signal"][1]["Value"][0]
-    time_value = message["Signal"][2]["Value"][0]
-    print("motor value:"+ str(motor_value))
-    print("value:"+ str(value))
-    print("time:"+ str(time_value))
+    arduino_time = message["Signal"][0]["Value"][0]
+    value = message["Signal"][1]["Value"][0]
+    motor_value = message["Signal"][2]["Value"][0]
+    print("arduino_time:"+ str(arduino_time))
+    
+
 
     global last_10_received_values_sensor
-    last_10_received_values_sensor.append([value, time.time()-time_zero])
+    last_10_received_values_sensor.append([value, arduino_time])
     if len(last_10_received_values_sensor) > 100:
         last_10_received_values_sensor.pop(0)
 
     global last_10_received_values_motor
-    last_10_received_values_motor.append([motor_value, time.time()-time_zero])
+    last_10_received_values_motor.append([motor_value, arduino_time])
     if len(last_10_received_values_motor) > 100:
         last_10_received_values_motor.pop(0)
 # Create WebSocketClient instance
@@ -260,9 +260,14 @@ def l_motor():
 @app.route('/api/send-data', methods=['POST'])
 def send_data():
     # Set up GPIO
+    global time_zero 
+    
+    print("time_now" + str(time.time()))
+    print("")
+    time_zero = time.time() # reset the time to zero
+                            # reset arduino time to zero
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(2, GPIO.OUT)
-
     # Set GPIO2 high
     GPIO.output(2, GPIO.HIGH)
     time.sleep(0.1)
@@ -272,8 +277,7 @@ def send_data():
     # Clean up GPIO
     GPIO.cleanup()
 
-    global time_zero 
-    time_zero = time.time() 
+
     """Send data to WebSocket server."""
     try:
         data = request.json
