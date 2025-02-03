@@ -194,10 +194,10 @@ app = Flask(__name__)
 def handle_websocket_message(message):
     value = message["Signal"][0]["Value"][0]
     motor_value = message["Signal"][1]["Value"][0]
-    time = message["Signal"][2]["Value"][0]
+    time_value = message["Signal"][2]["Value"][0]
     print("motor value:"+ str(motor_value))
     print("value:"+ str(value))
-    print("time:"+ str(time))
+    print("time:"+ str(time_value))
 
     global last_10_received_values_sensor
     last_10_received_values_sensor.append([value, time.time()-time_zero])
