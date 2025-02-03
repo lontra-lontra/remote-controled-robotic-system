@@ -150,8 +150,11 @@ def generate_frames():
                 centroid = last_10_received_values[-1]
 
             sign = np.sign(centroid[0] - centre[0]) 
-            pb = correction(centroid, centre)
+            #pb = correction(centroid, centre)
+            pb = np.array(centroid) - np.array(centre)
             distance = np.linalg.norm(pb)
+
+
             scale = 0.1/np.linalg.norm(np.array(plus_loing) - np.array(plus_proche))
             
             distance = distance * scale * sign 
