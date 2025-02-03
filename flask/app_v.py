@@ -33,6 +33,7 @@ print(config)
 WEBSOCKET_URL = f"ws://{config['matlab_socket_Server_IP_Adress']}:{config['matlab_socket_Server_Port']}"
 last_10_received_values = []
 last_10_received_values_sensor =[]
+last_10_received_values_motor =[]
 
 if config["camera"]:
     picam2 = Picamera2()
@@ -195,11 +196,16 @@ def handle_websocket_message(message):
     motor_value = message["Signal"][1]["Value"][0]
     print("motor value:"+ str(motor_value))
     print("value:"+ str(value))
+
     global last_10_received_values_sensor
     last_10_received_values_sensor.append([value, time.time()-time_zero])
     if len(last_10_received_values_sensor) > 100:
         last_10_received_values_sensor.pop(0)
 
+    global last_10_received_values_motor
+    last_10_received_values_motor.append([motor_value, time.time()-time_zero])
+    if len(last_10_received_values_motor) > 100:
+        last_10_received_values_motor.pop(0)
 # Create WebSocketClient instance
 websocket_client = WebSocketClient(on_message=handle_websocket_message)
 
@@ -240,6 +246,10 @@ def l():
 @app.route('/values_camera', methods=['GET'])
 def l_camera():
     return jsonify(last_10_received_values)
+
+@app.route('/values_motor', methods=['GET'])
+def l_motor():
+    return jsonify(last_10_received_values_motor)
 
 
 
