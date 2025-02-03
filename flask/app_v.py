@@ -255,9 +255,24 @@ def l_motor():
 
 @app.route('/min_and_max_times', methods=['GET'])
 def min_and_max_times():
-    return jsonify({"min_time": min([last_10_received_values[0],last_10_received_values_sensor[0], last_10_received_values_motor[0] ]),
-                     "max_time": max([last_10_received_values[-1],last_10_received_values_sensor[-1], last_10_received_values_motor[-1] ])})
+    min_times = [
+        last_10_received_values[0][1] if last_10_received_values else None,
+        last_10_received_values_sensor[0][1] if last_10_received_values_sensor else None,
+        last_10_received_values_motor[0][1] if last_10_received_values_motor else None
+    ]
+    max_times = [
+        last_10_received_values[-1][1] if last_10_received_values else None,
+        last_10_received_values_sensor[-1][1] if last_10_received_values_sensor else None,
+        last_10_received_values_motor[-1][1] if last_10_received_values_motor else None
+    ]
 
+    min_time = max([time for time in min_times if time is not None])
+    max_time = max([time for time in max_times if time is not None])
+
+    return jsonify({
+        "min_time": min_time,
+        "max_time": max_time
+    })
 
 
 # Route for sending data over WebSocket
