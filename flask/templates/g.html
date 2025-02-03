@@ -51,7 +51,7 @@
                     console.log(data);
                     if (chart) {
                         // Update the chart's labels and data
-                        chart.data.labels = data.map(item => item[1]); // Use the time values for labels
+                        chart.data.labels = data.map(item => item[1].toFixed(2)); // Use the time values for labels and show only the first 2 digits
                         chart.data.datasets[0].data = data.map(item => item[0]); // Use the value for data
                         chart.update(); // Re-render the chart
                     }
