@@ -9,6 +9,7 @@ import cv2
 import time
 from picamera2 import Picamera2
 import numpy as np
+import RPi.GPIO as GPIO
 
 
 time_zero = time.time()
@@ -258,6 +259,19 @@ def l_motor():
 # Route for sending data over WebSocket
 @app.route('/api/send-data', methods=['POST'])
 def send_data():
+    # Set up GPIO
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(2, GPIO.OUT)
+
+    # Set GPIO2 high
+    GPIO.output(2, GPIO.HIGH)
+    time.sleep(0.1)
+    # Set GPIO2 low
+    GPIO.output(2, GPIO.LOW)
+
+    # Clean up GPIO
+    GPIO.cleanup()
+
     global time_zero 
     time_zero = time.time() 
     """Send data to WebSocket server."""
