@@ -191,7 +191,6 @@ app = Flask(__name__)
 
 # WebSocket message handler
 def handle_websocket_message(message):
-    print("json:" + str(message))
     value = message["Signal"][0]["Value"][0]
     motor_value = message["Signal"][1]["Value"][0]
     print("motor value:"+ str(motor_value))
@@ -259,4 +258,4 @@ def send_data():
 
 if __name__ == '__main__':
     # Start Flask app
-    app.run(host='0.0.0.0', port=1981)
+    app.run(host='0.0.0.0', port=1981, debug=False)
