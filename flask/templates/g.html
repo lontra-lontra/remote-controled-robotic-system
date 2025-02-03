@@ -31,21 +31,7 @@
                         x: { 
                         title: { display: true, text: 'Time' },
                         beginAtZero: true
-                        },
-                        min: {
-                            callback: function(value) {
-                                return fetch('/min_and_max_times')
-                                    .then(response => response.json())
-                                    .then(data => data.min_time);
-                            }
-                        },
-                        max: {
-                            callback: function(value) {
-                                return fetch('/min_and_max_times')
-                                    .then(response => response.json())
-                                    .then(data => data.max_time);
-                            }
-                        }
+                        
                     },
                         y: {
                             beginAtZero: true,
