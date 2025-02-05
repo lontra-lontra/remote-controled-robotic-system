@@ -49,6 +49,21 @@
         .active {
             display: block;
         }
+        .camera-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            max-width: 1300px;
+            margin: auto;
+        }
+        iframe {
+            width: 100%;
+            height: 300px;
+            border: 1px solid #ccc;
+        }
         .footer {
             background-color: var(--navy-blue);
             color: white;
@@ -87,18 +102,17 @@
         <div id="content-view" class="view-container active">
             <h2>Contenu Défilable</h2>
             <p>Bienvenue tout le monde à notre projet sur le remote controlled robotic system.</p>
-            <h2>Report</h2>
-            <a href="https://www.overleaf.com/project/679a43538eea508c6ef27da7/output/output.pdf" target="_blank">
-                📄 See PDF made in Overleaf
-            </a>
+            <iframe src="PROJECTIDS.pdf" width="100%" height="600px"></iframe>
         </div>
         
         <div id="camera-view" class="view-container">
             <h3>Vue de la Caméra</h3>
-            <iframe src="graph?query=values_camera" width="640" height="480"></iframe>
-            <iframe src="graph?query=values_motor" width="640" height="480"></iframe>
-            <iframe src="/graph?query=values" width="640" height="480"></iframe>
-            <iframe src="/camera_view" width="640" height="480"></iframe>
+            <div class="camera-grid">
+                <iframe src="graph?query=values_camera"></iframe>
+                <iframe src="graph?query=values_motor"></iframe>
+                <iframe src="/graph?query=values"></iframe>
+                <iframe src="/camera_view"></iframe>
+            </div>
             <div>
                 <input type="number" id="inputP" placeholder="P (Proportionnel)">
                 <input type="number" id="inputI" placeholder="I (Intégral)">
@@ -126,37 +140,7 @@
             });
             document.getElementById(viewId).classList.add('active');
         }
-        
-        function loadChart() {
-            const chartContainer = document.querySelector('.chart-container');
-            const ctx = document.getElementById('dataChart').getContext('2d');
-            
-            chartContainer.style.display = 'block';
-
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['P', 'I', 'D'],
-                    datasets: [{
-                        label: 'Données',
-                        data: [
-                            document.getElementById('inputP').value || 0,
-                            document.getElementById('inputI').value || 0,
-                            document.getElementById('inputD').value || 0
-                        ],
-                        backgroundColor: ['#1A3D5E', '#4A90E2', '#87CEEB']
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-        }
     </script>
 </body>
 </html>
+
