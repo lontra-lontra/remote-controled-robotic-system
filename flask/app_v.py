@@ -14,7 +14,7 @@ import RPi.GPIO as GPIO
 
 time_zero = time.time()
 
-buffer_size = 1000
+buffer_size = 100
 centre = (402, 271)
 plus_loing = (577, 319)
 plus_proche = (232, 252)
