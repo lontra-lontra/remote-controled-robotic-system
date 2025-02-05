@@ -255,14 +255,17 @@ def l_camera():
 def l_speed_camera():
     return jsonify(np.gradient(values[0], values[1]))
 
+
+@app.route('/values_motor', methods=['GET'])
+def l_motor():
+    return jsonify(values_motor)
+
 @app.route('/values_speed_sensor', methods=['GET'])
 def l_speed_sensor():
     return jsonify(np.gradient(values_sensor[0], values_sensor[1]))
 
 
-@app.route('/values_motor', methods=['GET'])
-def l_motor():
-    return jsonify(values_motor)
+
 
 
 
