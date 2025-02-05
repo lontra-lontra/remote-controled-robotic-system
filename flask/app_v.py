@@ -266,7 +266,7 @@ def low_pass_filter(values, alpha=0.1):
 
     return filtered_values
 
-@app.route('/values_camera_filtered ', methods=['GET'])
+@app.route('/values_camera_filtered', methods=['GET'])
 def f_values_camera_filtered():
     values_camera_filtered = low_pass_filter(values)
     return jsonify(values_camera_filtered)
