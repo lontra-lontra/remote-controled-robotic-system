@@ -290,9 +290,7 @@ def reset_values():
     global values_motor
     global values_sensor_vitesse
     values = []
-    values_vitesse = []
     values_sensor = []
-    values_sensor_vitesse = []
     values_motor = []
 
 
