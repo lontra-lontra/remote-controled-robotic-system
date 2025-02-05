@@ -206,7 +206,7 @@ def handle_websocket_message(message):
         values_sensor.pop(0)
 
     global values_motor
-    values_motor.append([motor_value, arduino_time])
+    values_motor.append([motor_value-90, arduino_time])
     if len(values_motor) > buffer_size:
         values_motor.pop(0)
 # Create WebSocketClient instance
