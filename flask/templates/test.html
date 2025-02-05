@@ -84,30 +84,37 @@
     <button onclick="sendMessage()">Send</button>
     <br>
     <label for="PInput">P: </label>
-    <input type="text" id="PInput" placeholder="Enter value for P">
+    <input type="range" id="PInput" min="0" max="100" step="1">
     <br>
     <label for="IInput">I: </label>
-    <input type="text" id="IInput" placeholder="Enter value for I">
+    <input type="range" id="IInput" min="0" max="100" step="1">
     <br>
     <label for="DInput">D: </label>
-    <input type="text" id="DInput" placeholder="Enter value for D">
+    <input type="range" id="DInput" min="0" max="100" step="1">
     <br>
-
+    <label for="BiasDistance">Bias Distance: </label>
+    <input type="range" id="BiasDistance" min="0" max="100" step="1">
     <br>
-
+    <label for="BiasMotor">Bias Motor: </label>
+    <input type="range" id="BiasMotor" min="0" max="100" step="1">
+    <br>
 
     <script>
         async function sendMessage() {
             const PInput = document.getElementById("PInput").value;
             const IInput = document.getElementById("IInput").value;
             const DInput = document.getElementById("DInput").value;
+            const BiasDistance = document.getElementById("BiasDistance").value;
+            const BiasMotor = document.getElementById("BiasMotor").value;
 
             const jsonData = {
                 "BlockID": "webpub 1",
                 "Signal": [
                     { "DataType": "single", "Value": [PInput] },
                     { "DataType": "single", "Value": [IInput] },
-                    { "DataType": "single", "Value": [DInput] }
+                    { "DataType": "single", "Value": [DInput] },
+                    { "DataType": "single", "Value": [BiasDistance] },
+                    { "DataType": "single", "Value": [BiasMotor] }
                 ]
             };
 
