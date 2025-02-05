@@ -274,7 +274,6 @@ def f_values_camera_filtered():
 
 @app.route('/values_derivative_of_camera_filtered', methods=['GET'])
 def f_values_derivative_of_camera_filtered():
-    values_derivative_of_camera_filtered = 
     if len(values) > 1:
         values_array = np.array(values)
         distances = values_array[:, 0]
