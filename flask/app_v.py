@@ -251,22 +251,16 @@ def l():
 def l_camera():
     return jsonify(values)
 
-
 @app.route('/values_speed_camera', methods=['GET'])
 def l_speed_camera():
-    return jsonify([np.gradient(values[0], values[1]), values[1]])
+    # return the gradient of the values
+    values_vitesse = [np.gradient(values[0], values[1]), values[1]]
+    return jsonify(values_vitesse)
 
 
 @app.route('/values_motor', methods=['GET'])
 def l_motor():
     return jsonify(values_motor)
-
-@app.route('/values_speed_sensor', methods=['GET'])
-def l_speed_sensor():
-    return jsonify([np.gradient(values_sensor[0], values_sensor[1]), values_sensor[1]])
-
-
-
 
 
 
@@ -294,7 +288,9 @@ def reset_values():
     global values_motor
     global values_sensor_vitesse
     values = []
+    values_vitesse = []
     values_sensor = []
+    values_sensor_vitesse = []
     values_motor = []
 
 
