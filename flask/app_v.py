@@ -255,7 +255,7 @@ def l_camera():
 def l_speed_camera():
     # return the gradient of the values
     values_vitesse = [np.gradient(values[0], values[1]), values[1]]
-    return jsonify(values_vitesse)
+    return jsonify(values_vitesse.tolist())
 
 
 @app.route('/values_motor', methods=['GET'])
