@@ -235,7 +235,7 @@ def camera_view():
     """
 
 @app.route('/ancien')
-def index():
+def index_ancien():
     return render_template('test.html')
 
 @app.route('/')
