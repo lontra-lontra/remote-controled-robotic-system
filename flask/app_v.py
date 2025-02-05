@@ -313,7 +313,11 @@ def l_speed_camera():
 def l_motor():
     return jsonify(values_motor)
 
-
+@app.route('/reset', methods=['POST'])
+def reset():
+    reset_timer()
+    reset_values()
+    return jsonify({"message": "Timer and values reset successfully"}), 200
 
 def reset_timer():
     # Set up GPIO
@@ -348,8 +352,6 @@ def reset_values():
 # Route for sending data over WebSocket
 @app.route('/api/send-data', methods=['POST'])
 def send_data():
-    reset_timer()
-    reset_values()
 
     """Send data to WebSocket server."""
     try:

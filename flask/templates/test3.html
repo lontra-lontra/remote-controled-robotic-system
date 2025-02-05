@@ -128,6 +128,26 @@
     </div>
 
 
+    <button onclick="resetValues()">Reset</button>
+
+    <script>
+        async function resetValues() {
+            try {
+                const response = await fetch('/reset', {
+                    method: 'POST'
+                });
+
+                if (response.ok) {
+                    console.log('Timer and values reset successfully');
+                } else {
+                    console.error('Error resetting values:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+    </script>
+
     <h2>Ici le PID:</h2>
     <button onclick="sendMessage()">Send</button>
     <br>
