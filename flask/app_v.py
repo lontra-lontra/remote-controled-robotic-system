@@ -32,9 +32,9 @@ config_file.close()
 
 print(config)
 WEBSOCKET_URL = f"ws://{config['matlab_socket_Server_IP_Adress']}:{config['matlab_socket_Server_Port']}"
-last_10_received_values = []
-last_10_received_values_sensor =[]
-last_10_received_values_motor =[]
+values = []
+values_sensor =[]
+values_motor =[]
 
 if config["camera"]:
     picam2 = Picamera2()
@@ -149,7 +149,7 @@ def generate_frames():
             frame_bytes = buffer.tobytes()
             
             if centroid is None:
-                centroid = last_10_received_values[-1]
+                centroid = values[-1]
 
             sign = np.sign(centroid[0] - centre[0]) 
             #pb = correction(centroid, centre)
@@ -161,11 +161,11 @@ def generate_frames():
             
             distance = distance * scale * sign 
             distance = distance*1000
-            last_10_received_values.append([distance, capture_time])
+            values.append([distance, capture_time])
 
 
-            if len(last_10_received_values) > 100:
-                last_10_received_values.pop(0)
+            if len(values) > 100:
+                values.pop(0)
         else:
             frame_bytes = frame
 
@@ -200,15 +200,15 @@ def handle_websocket_message(message):
     
 
 
-    global last_10_received_values_sensor
-    last_10_received_values_sensor.append([value, arduino_time])
-    if len(last_10_received_values_sensor) > 100:
-        last_10_received_values_sensor.pop(0)
+    global values_sensor
+    values_sensor.append([value, arduino_time])
+    if len(values_sensor) > 100:
+        values_sensor.pop(0)
 
-    global last_10_received_values_motor
-    last_10_received_values_motor.append([motor_value, arduino_time])
-    if len(last_10_received_values_motor) > 100:
-        last_10_received_values_motor.pop(0)
+    global values_motor
+    values_motor.append([motor_value, arduino_time])
+    if len(values_motor) > 100:
+        values_motor.pop(0)
 # Create WebSocketClient instance
 websocket_client = WebSocketClient(on_message=handle_websocket_message)
 
@@ -243,26 +243,22 @@ def g():
 
 @app.route('/values', methods=['GET'])
 def l():
-    return jsonify(last_10_received_values_sensor)
+    return jsonify(values_sensor)
 
 @app.route('/values_camera', methods=['GET'])
 def l_camera():
-    return jsonify(last_10_received_values)
+    return jsonify(values)
 
 @app.route('/values_motor', methods=['GET'])
 def l_motor():
-    return jsonify(last_10_received_values_motor)
+    return jsonify(values_motor)
 
 
 
-# Route for sending data over WebSocket
-@app.route('/api/send-data', methods=['POST'])
-def send_data():
+def reset_timer():
     # Set up GPIO
     global time_zero 
     
-    print("time_now" + str(time.time()))
-    print("")
     time_zero = time.time() # reset the time to zero
                             # reset arduino time to zero
     GPIO.setmode(GPIO.BCM)
@@ -276,6 +272,12 @@ def send_data():
     # Clean up GPIO
     GPIO.cleanup()
 
+
+
+# Route for sending data over WebSocket
+@app.route('/api/send-data', methods=['POST'])
+def send_data():
+    reset_timer()
 
     """Send data to WebSocket server."""
     try:
