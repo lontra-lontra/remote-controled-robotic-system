@@ -33,7 +33,9 @@ config_file.close()
 print(config)
 WEBSOCKET_URL = f"ws://{config['matlab_socket_Server_IP_Adress']}:{config['matlab_socket_Server_Port']}"
 values = []
+values_vitesse = []
 values_sensor =[]
+values_sensor_vitesse =[]
 values_motor =[]
 
 if config["camera"]:
@@ -249,6 +251,15 @@ def l():
 def l_camera():
     return jsonify(values)
 
+@app.route('/values_speed_camera', methods=['GET'])
+def l_camera():
+    return jsonify(np.gradient(values[0], values[1]))
+
+@app.route('/values_speed_sensor', methods=['GET'])
+def l_camera():
+    return jsonify(np.gradient(values_sensor_vitesse[0], values_sensor_vitesse[1]))
+
+
 @app.route('/values_motor', methods=['GET'])
 def l_motor():
     return jsonify(values_motor)
@@ -274,10 +285,14 @@ def reset_timer():
 
 def reset_values():
     global values
+    global values_vitesse   
     global values_sensor
     global values_motor
+    global values_sensor_vitesse
     values = []
+    values_vitesse = []
     values_sensor = []
+    values_sensor_vitesse = []
     values_motor = []
 
 
