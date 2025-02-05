@@ -14,7 +14,7 @@ import RPi.GPIO as GPIO
 
 time_zero = time.time()
 
-
+buffer_size = 1000
 centre = (402, 271)
 plus_loing = (577, 319)
 plus_proche = (232, 252)
@@ -164,7 +164,7 @@ def generate_frames():
             values.append([distance, capture_time])
 
 
-            if len(values) > 100:
+            if len(values) > buffer_size:
                 values.pop(0)
         else:
             frame_bytes = frame
@@ -202,12 +202,12 @@ def handle_websocket_message(message):
 
     global values_sensor
     values_sensor.append([value, arduino_time])
-    if len(values_sensor) > 100:
+    if len(values_sensor) > buffer_size:
         values_sensor.pop(0)
 
     global values_motor
     values_motor.append([motor_value, arduino_time])
-    if len(values_motor) > 100:
+    if len(values_motor) > buffer_size:
         values_motor.pop(0)
 # Create WebSocketClient instance
 websocket_client = WebSocketClient(on_message=handle_websocket_message)
