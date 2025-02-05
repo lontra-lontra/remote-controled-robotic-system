@@ -252,11 +252,11 @@ def l_camera():
     return jsonify(values)
 
 @app.route('/values_speed_camera', methods=['GET'])
-def l_camera():
+def l_speed_camera():
     return jsonify(np.gradient(values[0], values[1]))
 
 @app.route('/values_speed_sensor', methods=['GET'])
-def l_camera():
+def l_speed_sensor():
     return jsonify(np.gradient(values_sensor_vitesse[0], values_sensor_vitesse[1]))
 
 
