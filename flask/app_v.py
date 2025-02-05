@@ -272,6 +272,21 @@ def f_values_camera_filtered():
     return jsonify(values_camera_filtered)
 
 
+@app.route('/values_derivative_of_camera_filtered', methods=['GET'])
+def f_values_derivative_of_camera_filtered():
+    values_derivative_of_camera_filtered = 
+    if len(values) > 1:
+        values_array = np.array(values)
+        distances = values_array[:, 0]
+        times = values_array[:, 1]
+        derivatives = np.diff(distances) / np.diff(times)
+        times = times[1:]  # Adjust times array to match the length of derivatives
+        values_derivative_of_camera_filtered = list(zip(derivatives, times))
+    else:
+        values_derivative_of_camera_filtered = []
+    return jsonify(values_derivative_of_camera_filtered)
+
+
 @app.route('/values_speed_camera', methods=['GET'])
 def l_speed_camera():
     # Calculate the gradient of the values
