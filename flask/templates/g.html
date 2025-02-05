@@ -1,4 +1,17 @@
-function initializeChart() {
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-Time Chart</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <canvas id="realtimeChart" width="640" height="480"></canvas>
+    <script>
+        let chart; // Declare the chart variable globally
+
+        function initializeChart() {
     const query = new URLSearchParams(window.location.search).get('query'); 
     const ctx = document.getElementById('realtimeChart').getContext('2d');
     chart = new Chart(ctx, {
@@ -61,3 +74,7 @@ function fetchAndUpdateChart() {
 // Initialize the chart and set up periodic updates
 initializeChart();
 setInterval(fetchAndUpdateChart, 200);
+
+    </script>
+</body>
+</html>
