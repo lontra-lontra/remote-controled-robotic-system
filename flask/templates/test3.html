@@ -108,10 +108,13 @@
         <div id="camera-view" class="view-container">
             <h3>Vue de la Caméra</h3>
             <div class="camera-grid">
-                <iframe src="graph?query=values_camera"></iframe>
-                <iframe src="graph?query=values_motor"></iframe>
-                <iframe src="/graph?query=values"></iframe>
-                <iframe src="/camera_view"></iframe>
+                <iframe src="graph?query=values_camera" width="640" height="480"></iframe>
+                <iframe src="graph?query=values_motor" width="640" height="480"></iframe>
+                <iframe src="/graph?query=values" width="640" height="480"></iframe>
+                <iframe src="/graph?query=values_speed_camera" width="640" height="480"></iframe>
+                <iframe src="/graph?query=values_camera_filtered" width="640" height="480"></iframe>
+                <iframe src="/graph?query=values_derivative_of_camera_filtered" width="640" height="480"></iframe>
+                <iframe src="/camera_view" width="640" height="480"></iframe>
             </div>
             <div>
                 <input type="number" id="inputP" placeholder="P (Proportionnel)">
