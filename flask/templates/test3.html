@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>PID Controller Overview</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chart.js/3.7.1/chart.min.js"></script>
+    <style>
+        :root {
+            --navy-blue: #1A3D5E;
+            --light-blue: #4A90E2;
+            --background-blue: #F0F4F8;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: var(--background-blue);
+        }
+        .header {
+            background-color: var(--navy-blue);
+            color: white;
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+        }
+        .logo img {
+            width: 100px;
+            height: auto;
+            margin-right: 15px;
+        }
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            background-color: white;
+        }
+        .button-container {
+            margin-bottom: 20px;
+        }
+        .view-container {
+            width: 100%;
+            max-width: 800px;
+            display: none;
+        }
+        .active {
+            display: block;
+        }
+        .footer {
+            background-color: var(--navy-blue);
+            color: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px;
+        }
+        button {
+            background-color: var(--light-blue);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: var(--navy-blue);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">
+            <img src="http://127.0.0.1:1981/static/minesparisLOGO.png" alt="LOGO">
+        </div>
+        <h1>Project IDS: Remote Controled Robotic System</h1>
+    </div>
+    
+    <div class="main-content">
+        <div class="button-container">
+            <button onclick="toggleView('content-view')">Rapport</button>
+            <button onclick="toggleView('camera-view')">Données et camera</button>
+        </div>
+        
+        <div id="content-view" class="view-container active">
+            <h2>Contenu Défilable</h2>
+            <p>Bienvenue tout le monde à notre projet sur le remote controlled robotic system.</p>
+            <h2>Report</h2>
+            <a href="https://www.overleaf.com/project/679a43538eea508c6ef27da7/output/output.pdf" target="_blank">
+                📄 See PDF made in Overleaf
+            </a>
+        </div>
+        
+        <div id="camera-view" class="view-container">
+            <h3>Vue de la Caméra</h3>
+            <iframe src="graph?query=values_camera" width="640" height="480"></iframe>
+            <iframe src="graph?query=values_motor" width="640" height="480"></iframe>
+            <iframe src="/graph?query=values" width="640" height="480"></iframe>
+            <iframe src="/camera_view" width="640" height="480"></iframe>
+            <div>
+                <input type="number" id="inputP" placeholder="P (Proportionnel)">
+                <input type="number" id="inputI" placeholder="I (Intégral)">
+                <input type="number" id="inputD" placeholder="D (Dérivé)">
+                <button onclick="loadChart()">Charger Données</button>
+                <div class="chart-container" style="display:none;">
+                    <canvas id="dataChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <span>Solal Raymondjean</span>
+        <span>Ian Ribeiro</span>
+        <span>Davi Loucena</span>
+        <span>Yanis Marmier</span>
+        <span>Ana Corrales</span>
+    </div>
+
+    <script>
+        function toggleView(viewId) {
+            document.querySelectorAll('.view-container').forEach(view => {
+                view.classList.remove('active');
+            });
+            document.getElementById(viewId).classList.add('active');
+        }
+        
+        function loadChart() {
+            const chartContainer = document.querySelector('.chart-container');
+            const ctx = document.getElementById('dataChart').getContext('2d');
+            
+            chartContainer.style.display = 'block';
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['P', 'I', 'D'],
+                    datasets: [{
+                        label: 'Données',
+                        data: [
+                            document.getElementById('inputP').value || 0,
+                            document.getElementById('inputI').value || 0,
+                            document.getElementById('inputD').value || 0
+                        ],
+                        backgroundColor: ['#1A3D5E', '#4A90E2', '#87CEEB']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
