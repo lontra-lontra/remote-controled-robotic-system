@@ -84,19 +84,24 @@
     <button onclick="sendMessage()">Send</button>
     <br>
     <label for="PInput">P: </label>
-    <input type="range" id="PInput" min="0" max="200" step="1">
+    <input type="range" id="PInput" min="0" max="200" step="1" oninput="document.getElementById('PValue').innerText = this.value">
+    <span id="PValue">0</span>
     <br>
     <label for="IInput">I: </label>
-    <input type="range" id="IInput" min="0" max="200" step="1">
+    <input type="range" id="IInput" min="0" max="200" step="1" oninput="document.getElementById('IValue').innerText = this.value">
+    <span id="IValue">0</span>
     <br>
     <label for="DInput">D: </label>
-    <input type="range" id="DInput" min="0" max="200" step="1">
+    <input type="range" id="DInput" min="0" max="200" step="1" oninput="document.getElementById('DValue').innerText = this.value">
+    <span id="DValue">0</span>
     <br>
     <label for="BiasDistance">Bias Distance: </label>
-    <input type="range" id="BiasDistance" min="0" max="200" step="1" value="112"> 
+    <input type="range" id="BiasDistance" min="0" max="200" step="1" value="112" oninput="document.getElementById('BiasDistanceValue').innerText = this.value">
+    <span id="BiasDistanceValue">112</span>
     <br>
     <label for="BiasMotor">Bias Motor: </label>
-    <input type="range" id="BiasMotor" min="0" max="200" step="1"  value="82">
+    <input type="range" id="BiasMotor" min="0" max="200" step="1" value="82" oninput="document.getElementById('BiasMotorValue').innerText = this.value">
+    <span id="BiasMotorValue">82</span>
     <br>
 
     <script>
