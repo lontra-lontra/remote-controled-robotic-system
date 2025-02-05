@@ -272,12 +272,20 @@ def reset_timer():
     # Clean up GPIO
     GPIO.cleanup()
 
+def reset_values():
+    global values
+    global values_sensor
+    global values_motor
+    values = []
+    values_sensor = []
+    values_motor = []
 
 
 # Route for sending data over WebSocket
 @app.route('/api/send-data', methods=['POST'])
 def send_data():
     reset_timer()
+    reset_values()
 
     """Send data to WebSocket server."""
     try:
