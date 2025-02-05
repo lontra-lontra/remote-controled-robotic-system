@@ -14,7 +14,7 @@ import RPi.GPIO as GPIO
 
 time_zero = time.time()
 
-buffer_size = 1000
+buffer_size = 100
 centre = (402, 271)
 plus_loing = (577, 319)
 plus_proche = (232, 252)
@@ -234,6 +234,14 @@ def camera_view():
     </html>
     """
 
+#@app.route('/ancien')
+#%def index_ancien():
+#    return render_template('test.html')
+
+@app.route('/new')
+def index_new():
+    return render_template('test3.html')
+
 @app.route('/')
 def index():
     return render_template('test.html')
@@ -305,7 +313,11 @@ def l_speed_camera():
 def l_motor():
     return jsonify(values_motor)
 
-
+@app.route('/reset', methods=['POST'])
+def reset():
+    reset_timer()
+    reset_values()
+    return jsonify({"message": "Timer and values reset successfully"}), 200
 
 def reset_timer():
     # Set up GPIO
@@ -340,8 +352,6 @@ def reset_values():
 # Route for sending data over WebSocket
 @app.route('/api/send-data', methods=['POST'])
 def send_data():
-    reset_timer()
-    reset_values()
 
     """Send data to WebSocket server."""
     try:

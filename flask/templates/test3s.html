@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <title>PID Controller Overview</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chart.js/3.7.1/chart.min.js"></script>
-    
-
     <style>
         :root {
             --navy-blue: #1A3D5E;
@@ -104,7 +102,7 @@
         <div id="content-view" class="view-container active">
             <h2>Contenu Défilable</h2>
             <p>Bienvenue tout le monde à notre projet sur le remote controlled robotic system.</p>
-            
+            <iframe src="PROJECTIDS.pdf" width="100%" height="600px"></iframe>
         </div>
         
         <div id="camera-view" class="view-container">
@@ -118,6 +116,15 @@
                 <iframe src="/graph?query=values_derivative_of_camera_filtered" width="640" height="480"></iframe>
                 <iframe src="/camera_view" width="640" height="480"></iframe>
             </div>
+            <div>
+                <input type="number" id="inputP" placeholder="P (Proportionnel)">
+                <input type="number" id="inputI" placeholder="I (Intégral)">
+                <input type="number" id="inputD" placeholder="D (Dérivé)">
+                <button onclick="loadChart()">Charger Données</button>
+                <div class="chart-container" style="display:none;">
+                    <canvas id="dataChart"></canvas>
+                </div>
+            </div>
         </div>
     </div>
     
@@ -128,89 +135,6 @@
         <span>Yanis Marmier</span>
         <span>Ana Corrales</span>
     </div>
-
-
-    <button onclick="resetValues()">Reset</button>
-
-    <script>
-        async function resetValues() {
-            try {
-                const response = await fetch('/reset', {
-                    method: 'POST'
-                });
-
-                if (response.ok) {
-                    console.log('Timer and values reset successfully');
-                } else {
-                    console.error('Error resetting values:', response.statusText);
-                }
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        }
-    </script>
-
-    <h2>Ici le PID:</h2>
-    <button onclick="sendMessage()">Send</button>
-    <br>
-    <label for="PInput">P: </label>
-    <input type="range" id="PInput" min="0" max="400" step="1" oninput="document.getElementById('PValue').innerText = this.value; sendMessage();">
-    <span id="PValue">0</span>
-    <br>
-    <label for="IInput">I: </label>
-    <input type="range" id="IInput" min="0" max="400" step="1" oninput="document.getElementById('IValue').innerText = this.value; sendMessage();">
-    <span id="IValue">0</span>
-    <br>
-    <label for="DInput">D: </label>
-    <input type="range" id="DInput" min="0" max="400" step="1" oninput="document.getElementById('DValue').innerText = this.value; sendMessage();">
-    <span id="DValue">0</span>
-    <br>
-    <label for="BiasDistance">Bias Distance: </label>
-    <input type="range" id="BiasDistance" min="0" max="200" step="1" value="112" oninput="document.getElementById('BiasDistanceValue').innerText = this.value; sendMessage();">
-    <span id="BiasDistanceValue">112</span>
-    <br>
-    <label for="BiasMotor">Bias Motor: </label>
-    <input type="range" id="BiasMotor" min="0" max="200" step="1" value="82" oninput="document.getElementById('BiasMotorValue').innerText = this.value; sendMessage();">
-    <span id="BiasMotorValue">82</span>
-    <br>
-
-    <script>
-        async function sendMessage() {
-            const PInput = document.getElementById("PInput").value;
-            const IInput = document.getElementById("IInput").value;
-            const DInput = document.getElementById("DInput").value;
-            const BiasDistance = document.getElementById("BiasDistance").value;
-            const BiasMotor = document.getElementById("BiasMotor").value;
-
-            const jsonData = {
-                "BlockID": "webpub 1",
-                "Signal": [
-                    { "DataType": "single", "Value": [PInput] },
-                    { "DataType": "single", "Value": [IInput] },
-                    { "DataType": "single", "Value": [DInput] },
-                    { "DataType": "single", "Value": [BiasDistance] },
-                    { "DataType": "single", "Value": [BiasMotor] }
-                ]
-            };
-
-            try {
-                const response = await fetch('/api/send-data', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(jsonData)
-                });
-
-                if (response.ok) {
-                    console.log('Data sent successfully');
-                } else {
-                    console.error('Error sending data:', response.statusText);
-                }
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        }
-    </script>
-
 
     <script>
         function toggleView(viewId) {
