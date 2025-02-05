@@ -234,9 +234,13 @@ def camera_view():
     </html>
     """
 
-@app.route('/')
+@app.route('/ancien')
 def index():
     return render_template('test.html')
+
+@app.route('/')
+def index():
+    return render_template('test3.html')
 
 
 @app.route('/graph')
