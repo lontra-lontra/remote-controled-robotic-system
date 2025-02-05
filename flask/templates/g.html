@@ -33,7 +33,7 @@
                         title: { display: true, text: 'Time' },
                         beginAtZero: true,
                         min: 0,
-                        max: 12,
+                        max: Math.ceil(Math.max(...data.map(item => item[1])) / 10) * 10,
                     },
                         y: {
                             beginAtZero: true,
