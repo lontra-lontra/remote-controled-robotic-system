@@ -251,6 +251,27 @@ def l():
 def l_camera():
     return jsonify(values)
 
+def low_pass_filter(values, alpha=0.1):
+    """Applique un filtre passe-bas sur les valeurs."""
+    if not values:
+        return []
+
+    filtered_values = [values[0]]  # Initialize with the first value
+    for i in range(1, len(values)):
+        previous_filtered_value = filtered_values[-1][0]
+        current_value = values[i][0]
+        current_time = values[i][1]
+        new_filtered_value = alpha * current_value + (1 - alpha) * previous_filtered_value
+        filtered_values.append([new_filtered_value, current_time])
+
+    return filtered_values
+
+@app.route('/values_camera_filtered ', methods=['GET'])
+def l_camera():
+    values_camera_filtered = low_pass_filter(values)
+    return jsonify(values_camera_filtered)
+
+
 @app.route('/values_speed_camera', methods=['GET'])
 def l_speed_camera():
     # Calculate the gradient of the values
