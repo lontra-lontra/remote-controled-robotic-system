@@ -17,11 +17,11 @@ import (
 var (
 	mutex  sync.Mutex
 	camera *gocv.VideoCapture
-	client websocketclient.WebSocketClient
+	client WebSocketClient
 	config map[string]interface{}
 )
 
-// loadConfig reads the configuration file and returns the settings as a map
+// loadConfig charge la configuration depuis un fichier JSON
 func loadConfig(filename string) (map[string]interface{}, error) {
 	var config map[string]interface{}
 	file, err := os.ReadFile(filename)
@@ -32,7 +32,7 @@ func loadConfig(filename string) (map[string]interface{}, error) {
 	return config, err
 }
 
-// startCamera initializes the camera for capturing video
+// startCamera initialise la caméra
 func startCamera() {
 	var err error
 	camera, err = gocv.OpenVideoCapture(0)
@@ -41,7 +41,7 @@ func startCamera() {
 	}
 }
 
-// sendDataLoop continuously processes frames and sends centroid data via WebSocket
+// sendDataLoop traite les images et envoie les centroïdes via WebSocket
 func sendDataLoop() {
 	for {
 		frame := gocv.NewMat()
@@ -51,18 +51,18 @@ func sendDataLoop() {
 		}
 		defer frame.Close()
 
-		// Define HSV color range for object detection
-		lowerBound := gocv.NewScalar(30, 150, 50, 0) // Example values
+		// Définir les seuils HSV
+		lowerBound := gocv.NewScalar(30, 150, 50, 0) // Exemple
 		upperBound := gocv.NewScalar(90, 255, 255, 0)
 
-		// Process the frame to detect centroid
-		centroid := dataprocessing.ProcessFrame(frame, lowerBound, upperBound)
+		// Détecter le centroïde
+		centroid := ProcessFrame(frame, lowerBound, upperBound)
 
 		if centroid.X == 0 && centroid.Y == 0 {
 			continue
 		}
 
-		// Prepare data in JSON format
+		// Envoyer les données en JSON via WebSocket
 		data := map[string]float32{
 			"centroid_x": float32(centroid.X),
 			"centroid_y": float32(centroid.Y),
@@ -70,11 +70,12 @@ func sendDataLoop() {
 		jsonData, _ := json.Marshal(data)
 		client.SendMessage(string(jsonData))
 
-		time.Sleep(1 * time.Second) // Send data every second
+		time.Sleep(1 * time.Second) // Envoi toutes les secondes
 	}
 }
 
-// streamVideo handles the video streaming endpoint using MJPEG format
+// streamVideo envoie le flux vidéo via HTTP (MJPEG)
+// streamVideo envoie le flux vidéo en MJPEG
 func streamVideo(c *gin.Context) {
 	c.Header("Content-Type", "multipart/x-mixed-replace; boundary=frame")
 	for {
@@ -85,9 +86,16 @@ func streamVideo(c *gin.Context) {
 		}
 		defer frame.Close()
 
-		// Encode frame as JPEG and send it over HTTP
+		// 🔹 Correction ici : Gestion de l'erreur avec ToImage()
+		img, err := frame.ToImage()
+		if err != nil {
+			log.Println("Error converting frame to image:", err)
+			continue
+		}
+
+		// Encoder en JPEG
 		var buf bytes.Buffer
-		jpeg.Encode(&buf, frame.ToImage(), nil)
+		jpeg.Encode(&buf, img, nil)
 		fmt.Fprintf(c.Writer, "--frame\r\nContent-Type: image/jpeg\r\n\r\n")
 		c.Writer.Write(buf.Bytes())
 		fmt.Fprintf(c.Writer, "\r\n")
@@ -95,6 +103,7 @@ func streamVideo(c *gin.Context) {
 	}
 }
 
+// main initialise la configuration et démarre le serveur
 func main() {
 	var err error
 	config, err = loadConfig("config.json")
@@ -102,13 +111,13 @@ func main() {
 		log.Fatal("Error loading config:", err)
 	}
 
-	// Retrieve WebSocket server details from config
+	// Charger l'URL WebSocket
 	serverIP := config["matlab_socket_Server_IP_Adress"].(string)
 	serverPort := int(config["matlab_socket_Server_Port"].(float64))
 	wsURL := fmt.Sprintf("ws://%s:%d", serverIP, serverPort)
 
-	// Initialize WebSocket client
-	client = websocketclient.WebSocketClient{
+	// Initialiser WebSocket
+	client = WebSocketClient{
 		url:       wsURL,
 		onMessage: func(msg string) { log.Println("Received:", msg) },
 	}
@@ -116,12 +125,12 @@ func main() {
 		log.Fatal("WebSocket connection error:", err)
 	}
 
-	// Start camera and launch data transmission
+	// Démarrer la caméra et le traitement
 	startCamera()
 	go sendDataLoop()
 
-	// Setup API server
+	// Lancer le serveur HTTP pour la vidéo
 	r := gin.Default()
-	r.GET("/stream", streamVideo) // Video streaming endpoint
-	r.Run(":8080")                // Run server on port 8080
+	r.GET("/stream", streamVideo)
+	r.Run(":8080") // Port 8080
 }
