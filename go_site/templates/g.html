@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-Time Chart</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <canvas id="realtimeChart" width="640" height="480"></canvas>
+    <script>
+        let chart; // Declare the chart variable globally
+
+        function initializeChart() {
+    const query = new URLSearchParams(window.location.search).get('query'); 
+    const ctx = document.getElementById('realtimeChart').getContext('2d');
+    chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [], 
+            datasets: [{
+                label: 'Real-Time Data of  ' + query,
+                data: [],
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1,
+                fill: false
+            }]
+        },
+        options: {
+            scales: {
+                x: { 
+                    type: 'linear',
+                    title: { display: true, text: 'Time' },
+                    beginAtZero: true,
+                    min: 0,
+                    max: 10 // Set a default value
+                },
+                y: {
+                    beginAtZero: true,
+                    min: -90,
+                    max: 90
+                }
+            },
+            animation: {
+                duration: 0
+            }
+        }
+    });
+}
+
+function fetchAndUpdateChart() {
+    const query = new URLSearchParams(window.location.search).get('query'); 
+    const url = '/' + query; 
+
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            if (chart) {
+                // Update labels and data
+                chart.data.labels = data.map(item => item[1].toFixed(2)); 
+                chart.data.datasets[0].data = data.map(item => item[0]);
+
+                // Dynamically update x-axis max
+                const maxTime = Math.max(...data.map(item => item[1]));
+                chart.options.scales.x.max = Math.ceil(maxTime / 10) * 10; 
+
+                chart.update();
+            }
+        })
+        .catch(error => console.error('Error fetching data:', error));
+}
+
+// Initialize the chart and set up periodic updates
+initializeChart();
+setInterval(fetchAndUpdateChart, 200);
+
+    </script>
+</body>
+</html>

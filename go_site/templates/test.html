@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Project de IDS</title>
+    <style>
+       body {
+        font-family: 'Times New Roman', Times, serif;
+        background-color: #f0f8ff;
+        text-align: center;
+        margin: 20px;
+      }
+      h1, h2, p {
+        margin: 10px 0;
+      }
+      h1 {
+        font-size: 1.5rem;
+        font-weight: bold;
+        text-transform: uppercase;
+      }
+      h2 {
+        font-size: 1.2rem;
+        font-style: italic;
+      }
+      .underline {
+        width: 80%;
+        height: 1px;
+        background-color: black;
+        margin: 15px auto;
+      }
+      .details {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.9rem;
+        text-align: left;
+      }
+      .details div {
+        width: 45%;
+      }
+      .left { text-align: left; }
+      .right { text-align: right; }
+      .input-container {
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+      }
+      input {
+        width: 300px;
+      }
+      .status {
+        font-size: 1rem;
+        font-weight: bold;
+        margin-top: 10px;
+      }
+    </style>
+</head>
+<body>
+    <img src="static/minesparisLOGO.png" alt="LOGO" width="250">
+    <h2>Intelligent and Digital Systems</h2>
+    <p>Second year Engineering Student</p>
+    <div class="underline"></div>
+    <h1>Remote Controlled Robotic System</h1>
+    <div class="underline"></div>  
+    
+    <div class="details">
+        <div class="left">
+            <p><em>Elaborated by:</em></p>
+            <p>Raymondjean Solal</p>
+            <p>Davi</p>
+            <p>Ribeiro Ian</p>
+            <p>Yanis</p>
+            <p>Corrales Ana</p>
+        </div>
+        <div class="right">
+            <p>Supervised by:</p>
+            <p>Prof. Danielle</p>
+        </div>
+    </div>
+    <p>Academic year: 2024/2025</p>
+    
+    <h2>Réglage du PID:</h2>
+    <div class="input-container">
+        <label for="PInput">P: <span id="PValue">50</span></label>
+        <input type="range" id="PInput" min="0" max="100" step="1" oninput="updatePID()">
+
+        <label for="IInput">I: <span id="IValue">50</span></label>
+        <input type="range" id="IInput" min="0" max="100" step="1" oninput="updatePID()">
+
+        <label for="DInput">D: <span id="DValue">50</span></label>
+        <input type="range" id="DInput" min="0" max="100" step="1" oninput="updatePID()">
+
+        <label for="BiasDistance">Bias Distance: <span id="BiasDistanceValue">50</span></label>
+        <input type="range" id="BiasDistance" min="0" max="100" step="1" oninput="updatePID()">
+
+        <label for="BiasMotor">Bias Motor: <span id="BiasMotorValue">50</span></label>
+        <input type="range" id="BiasMotor" min="0" max="100" step="1" oninput="updatePID()">
+    </div>
+
+    <p class="status" id="status">Connexion WebSocket : 🔴 Déconnecté</p>
+
+
+    <script>
+        let socket = new WebSocket("ws://://192.168.1.134:8080/ws");
+
+        socket.onopen = function () {
+            document.getElementById("status").innerHTML = "Connexion WebSocket : 🟢 Connecté";
+            console.log("Connexion WebSocket établie !");
+        };
+
+        socket.onerror = function (error) {
+            document.getElementById("status").innerHTML = "Connexion WebSocket : 🔴 Erreur";
+            console.log("Erreur WebSocket :", error);
+        };
+
+        function updatePID() {
+            let P = parseFloat(document.getElementById("PInput").value);
+            let I = parseFloat(document.getElementById("IInput").value);
+            let D = parseFloat(document.getElementById("DInput").value);
+            let BiasDistance = parseFloat(document.getElementById("BiasDistance").value);
+            let BiasMotor = parseFloat(document.getElementById("BiasMotor").value);
+
+            // Mise à jour des valeurs affichées
+            document.getElementById("PValue").innerText = P;
+            document.getElementById("IValue").innerText = I;
+            document.getElementById("DValue").innerText = D;
+            document.getElementById("BiasDistanceValue").innerText = BiasDistance;
+            document.getElementById("BiasMotorValue").innerText = BiasMotor;
+
+            let data = { P, I, D, BiasDistance, BiasMotor };
+            socket.send(JSON.stringify(data));
+        }
+    </script>
+
+    <h2>Graphiques & Vue Caméra:</h2>
+    <iframe src="/graph?query=values_camera" width="640" height="480"></iframe>
+    <iframe src="/graph?query=values_motor" width="640" height="480"></iframe>
+    <iframe src="/graph?query=values_sensor" width="640" height="480"></iframe>
+    <iframe src="/graph?query=values_sensor_vitesse" width="640" height="480"></iframe>
+    <iframe src="/graph?query=speed_camera" width="640" height="480"></iframe>
+    <iframe src="/stream" width="640" height="480"></iframe>
+
+</body>
+</html>
