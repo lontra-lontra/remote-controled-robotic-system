@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>PID Controller Overview</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chart.js/3.7.1/chart.min.js"></script>
+    <script type="text/javascript" async
+        src="https://polyfill.io/v3/polyfill.min.js?features=es6">
+    </script>
+    <script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js">
+    </script>
+    
+    <style>
+        :root {
+            --navy-blue: #1A3D5E;
+            --light-blue: #4A90E2;
+            --background-blue: #F0F4F8;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: var(--background-blue);
+        }
+        .header {
+            background-color: var(--navy-blue);
+            color: white;
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+        }
+        .logo img {
+            width: 100px;
+            height: auto;
+            margin-right: 15px;
+        }
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            background-color: white;
+        }
+        .button-container {
+            margin-bottom: 20px;
+        }
+        .view-container {
+            width: 100%;
+            max-width: 800px;
+            display: none;
+        }
+        .active {
+            display: block;
+        }
+        .camera-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            max-width: 1300px;
+            margin: auto;
+        }
+        iframe {
+            width: 100%;
+            height: 300px;
+            border: 1px solid #ccc;
+        }
+        .footer {
+            background-color: var(--navy-blue);
+            color: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px;
+        }
+        button {
+            background-color: var(--light-blue);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: var(--navy-blue);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">
+            <img src="http://127.0.0.1:1981/static/minesparisLOGO.png" alt="LOGO">
+        </div>
+        <h1>Project IDS: Remote Controled Robotic System</h1>
+    </div>
+    
+    <div class="main-content">
+        <div class="button-container">
+            <button onclick="toggleView('content-view')">Rapport</button>
+            <button onclick="toggleView('camera-view')">Données et camera</button>
+        </div>
+        
+        <div id="content-view" class="view-container active">
+            <h2>Contenu Défilable</h2>
+            <p>Bienvenue tout le monde à notre projet sur le remote controlled robotic system.</p>
+            <iframe src="PROJECTIDS.pdf#toolbar=0" width="100%" height="600px" style="border: none;"></iframe>
+            
+            <h3>Formules Mathématiques</h3>
+            <p>Voici une équation en ligne : \( E = mc^2 \)</p>
+            <p>Et une équation en bloc :</p>
+            <div>
+                \[
+                \int_{a}^{b} x^2 \,dx = \frac{b^3}{3} - \frac{a^3}{3}
+                \]
+            </div>
+        </div>
+        
+        <div id="camera-view" class="view-container">
+            <h3>Vue de la Caméra</h3>
+            <div class="camera-grid">
+                <iframe src="graph?query=values_camera"></iframe>
+                <iframe src="graph?query=values_motor"></iframe>
+                <iframe src="/graph?query=values"></iframe>
+                <iframe src="/graph?query=values_speed_camera"></iframe>
+                <iframe src="/graph?query=values_camera_filtered"></iframe>
+                <iframe src="/graph?query=values_derivative_of_camera_filtered"></iframe>
+                <iframe src="/camera_view"></iframe>
+            </div>
+            <h2>Ici le PID:</h2>
+            <button onclick="sendMessage()">Send</button>
+            <br><br/>
+            <label for="PInput">P: </label>
+            <input type="range" id="PInput" min="0" max="400" step="1" oninput="document.getElementById('PValue').innerText = this.value; sendMessage();">
+            <span id="PValue">0</span>
+            <br>
+            <label for="IInput">I: </label>
+            <input type="range" id="IInput" min="0" max="400" step="1" oninput="document.getElementById('IValue').innerText = this.value; sendMessage();">
+            <span id="IValue">0</span>
+            <br>
+            <label for="DInput">D: </label>
+            <input type="range" id="DInput" min="0" max="400" step="1" oninput="document.getElementById('DValue').innerText = this.value; sendMessage();">
+            <span id="DValue">0</span>
+            <br>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <span>Solal Raymondjean</span>
+        <span>Ian Ribeiro</span>
+        <span>Davi Loucena</span>
+        <span>Yanis Marmier</span>
+        <span>Ana Corrales</span>
+    </div>
+
+    <script>
+        function toggleView(viewId) {
+            document.querySelectorAll('.view-container').forEach(view => {
+                view.classList.remove('active');
+            });
+            document.getElementById(viewId).classList.add('active');
+        }
+    </script>
+</body>
+</html>
+

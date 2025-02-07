@@ -14,7 +14,7 @@ import RPi.GPIO as GPIO
 
 time_zero = time.time()
 
-buffer_size = 1000
+buffer_size = 100
 centre = (402, 271)
 plus_loing = (577, 319)
 plus_proche = (232, 252)
@@ -234,6 +234,14 @@ def camera_view():
     </html>
     """
 
+#@app.route('/ancien')
+#%def index_ancien():
+#    return render_template('test.html')
+
+@app.route('/new')
+def index_new():
+    return render_template('test3.html')
+
 @app.route('/')
 def index():
     return render_template('test.html')
@@ -272,6 +280,20 @@ def f_values_camera_filtered():
     return jsonify(values_camera_filtered)
 
 
+@app.route('/values_derivative_of_camera_filtered', methods=['GET'])
+def f_values_derivative_of_camera_filtered():
+    if len(values) > 1:
+        values_array = np.array(values)
+        distances = values_array[:, 0]
+        times = values_array[:, 1]
+        derivatives = np.diff(distances) / np.diff(times)
+        times = times[1:]  # Adjust times array to match the length of derivatives
+        values_derivative_of_camera_filtered = list(zip(derivatives, times))
+    else:
+        values_derivative_of_camera_filtered = []
+    return jsonify(values_derivative_of_camera_filtered)
+
+
 @app.route('/values_speed_camera', methods=['GET'])
 def l_speed_camera():
     # Calculate the gradient of the values
@@ -291,7 +313,11 @@ def l_speed_camera():
 def l_motor():
     return jsonify(values_motor)
 
-
+@app.route('/reset', methods=['POST'])
+def reset():
+    reset_timer()
+    reset_values()
+    return jsonify({"message": "Timer and values reset successfully"}), 200
 
 def reset_timer():
     # Set up GPIO
@@ -326,8 +352,6 @@ def reset_values():
 # Route for sending data over WebSocket
 @app.route('/api/send-data', methods=['POST'])
 def send_data():
-    reset_timer()
-    reset_values()
 
     """Send data to WebSocket server."""
     try:
