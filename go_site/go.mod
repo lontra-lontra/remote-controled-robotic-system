@@ -5,7 +5,7 @@ go 1.23.4
 require (
 	github.com/gin-gonic/gin v1.10.0
 	github.com/gorilla/websocket v1.5.3
-	gocv.io/x/gocv v0.30.0
+	gocv.io/x/gocv v0.40.0
 	gonum.org/v1/gonum v0.15.1
 	periph.io/x/conn/v3 v3.7.1
 	periph.io/x/host/v3 v3.8.3
