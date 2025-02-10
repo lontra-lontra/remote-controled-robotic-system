@@ -10,7 +10,7 @@
     <script type="text/javascript" async
         src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js">
     </script>
-    
+
     <style>
         :root {
             --navy-blue: #1A3D5E;
@@ -112,23 +112,25 @@
             </select>
         </div>
     </div>
-    
+
     <div class="main-content">
         <div class="button-container">
             <button onclick="toggleView('content-view')">Rapport</button>
             <button onclick="toggleView('camera-view')">Données et camera</button>
             <button id="professor-button" class="professor-interface" onclick="toggleView('professor-interface')">Valoration</button>
         </div>
-        
+
         <div id="content-view" class="view-container active">
             <h2>Travaux pratiques d’Automatique en ligne</h2>
-            <p>Bienvenue sur le projet d’Automatique en ligne !</p>            
+            <p>Bienvenue sur le projet d’Automatique en ligne !</p>
             <h3>Introduction</h3>
-            <p>Le but de ces travaux pratiques est de  modéliser et contrôler le comportement physique d'une boule. Dans un premier temps, nous allons modéliser le comportement physique du système ; il va vous être demandé d'envoyer les réponses aux professeurs. Dans un second temps, nous vous donnerons accès à un système physique, et nous vous demanderons de contrôler ce système grâce à un  contrôle PID en respectant certains objectifs de performance. 
+            <p>Le but de ces travaux pratiques est de  modéliser et contrôler le comportement physique d'une boule. Dans un premier temps, nous allons modéliser le comportement physique du système ; il va vous être demandé d'envoyer les réponses aux professeurs. Dans un second temps, nous vous donnerons accès à un système physique, et nous vous demanderons de contrôler ce système grâce à un  contrôle PID en respectant certains objectifs de performance.
             </p>
             <h3>Mise en Equation</h3>
             <p>La boule se situe sur un axe dont on peut contrôler son angle \(\theta\) en son milieu. Elle a une masse \(m\), un rayon \(R\) un moment d'inertie \(J = \frac{2}{5}mR^2\). La gravité est notée \(g\). On choisit un repère dont le centre est le centre de rotation, on note \(x\) la distance du centre de la balle avec le centre du repère.</p>
-            <img src="schema.png" alt="Schema" style="width: 100%; max-width: 800px; margin: 20px 0;">
+            <div> 
+                <img src="../static/schema.png" alt="Schema Image" style="width: 100%; max-width: 800px; margin: 20px 0;">
+            </div>
             <p>Donnez l'expression du Lagragien de ce système :</p>
             <p><i>Nota Bene : Le Lagragien est l'énergie cinétique moins l'énergie potentielle</i></p>
                 \\ ajouter une entree pour le lagragien
@@ -136,7 +138,7 @@
             <p><i>Nota Bene : \(\frac{\partial L}{\partial x} - \frac{d}{d t}(\frac{\partial L}{\partial \dot{x}})= 0\)</i></p>
                 \\ajouter une entree pour l'equation du systeme
             <h3>Controle avec un PID</h3>
-            <p>Maintenant que nous avons accès à la physique du système, nous allons essayer de le contrôler grâce à un PID. Les nouvelles équations sont les suivantes : </p>   
+            <p>Maintenant que nous avons accès à la physique du système, nous allons essayer de le contrôler grâce à un PID. Les nouvelles équations sont les suivantes : </p>
             <div>
                 \[
                 \ddot{x} = \frac{5}{7} g \sin\big(K_p e(t) + K_i \int_0^t e(\tau) \, d\tau + K_d \frac{d e(t)}{dt}\big)
@@ -180,7 +182,7 @@
             <button onclick="submitProfessorData()">Envoyer</button>
         </div>
     </div>
-    
+
     <div class="footer">
         <span>Solal Raymondjean</span>
         <span>Ian Ribeiro</span>
@@ -200,7 +202,7 @@
                 document.getElementById('professor-interface').style.display = 'none';
             }
         }
-        
+
         function toggleView(viewId) {
             document.querySelectorAll('.view-container').forEach(view => {
                 view.classList.remove('active');
@@ -219,4 +221,3 @@
     </script>
 </body>
 </html>
-
