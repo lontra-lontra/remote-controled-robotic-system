@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>PID Controller Overview</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chart.js/3.7.1/chart.min.js"></script>
+    <script type="text/javascript" async src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js"></script>
+    
+    <style>
+        :root {
+            --navy-blue: #1A3D5E;
+            --light-blue: #4A90E2;
+            --background-blue: #F0F4F8;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: var(--background-blue);
+            text-align: center;
+        }
+        .header {
+            background-color: var(--navy-blue);
+            color: white;
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            justify-content: space-between;
+        }
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            background-color: white;
+        }
+        .view-container {
+            display: none;
+            width: 100%;
+            max-width: 800px;
+            margin-top: 20px;
+        }
+        .active {
+            display: block;
+        }
+        button {
+            background-color: var(--light-blue);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+            margin: 10px;
+        }
+        button:hover {
+            background-color: var(--navy-blue);
+        }
+        input, textarea {
+            margin: 10px;
+            padding: 5px;
+            width: 80%;
+        }
+    </style>
+</head>
+<body onload="checkUserRole()">
+    <div class="header">
+        <h1>Bienvenue sur le Projet IDS</h1>
+        <div>
+            <label for="role">Vous êtes :</label>
+            <select id="role" onchange="toggleRole()">
+                <option value="professor">Professeur</option>
+                <option value="student" selected>Élève</option>
+            </select>
+        </div>
+    </div>
+    
+    <div class="main-content">
+        <div id="professor-interface" class="view-container">
+            <h2>Interface Professeur</h2>
+            <label for="instruction">Instructions :</label>
+            <textarea id="instruction" rows="4"></textarea>
+            <label for="value">Valeur de consigne :</label>
+            <input type="number" id="value" min="0" max="100">
+            <button onclick="submitProfessorData()">Envoyer</button>
+        </div>
+        
+        <div id="content-view" class="view-container active">
+            <h2>Rapport</h2>
+            <iframe src="PROJECTIDS.pdf#toolbar=0" width="100%" height="600px" style="border: none;"></iframe>
+        </div>
+        
+        <div id="camera-view" class="view-container">
+            <h3>Données et Caméra</h3>
+            <iframe src="graph?query=values_camera" width="100%" height="300px"></iframe>
+        </div>
+    </div>
+    
+    <script>
+        function checkUserRole() {
+            let role = document.getElementById('role').value;
+            toggleRole(role);
+        }
+        
+        function toggleRole() {
+            let role = document.getElementById('role').value;
+            document.getElementById('professor-interface').style.display = role === 'professor' ? 'block' : 'none';
+            document.getElementById('content-view').style.display = 'block';
+            document.getElementById('camera-view').style.display = 'block';
+        }
+        
+        function submitProfessorData() {
+            let instruction = document.getElementById('instruction').value;
+            let value = document.getElementById('value').value;
+            alert(`Données envoyées :\nInstructions: ${instruction}\nValeur: ${value}`);
+        }
+    </script>
+</body>
+</html>
