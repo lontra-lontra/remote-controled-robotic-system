@@ -46,6 +46,9 @@
             background-color: white;
         }
         .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
             margin-bottom: 20px;
         }
         .view-container {
@@ -90,6 +93,9 @@
         button:hover {
             background-color: var(--navy-blue);
         }
+        professor-interface {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -111,7 +117,7 @@
         <div class="button-container">
             <button onclick="toggleView('content-view')">Rapport</button>
             <button onclick="toggleView('camera-view')">Données et camera</button>
-            <button id="professor-button" class="professor-interface" onclick="toggleView('professor-interface')">Configuration</button>
+            <button id="professor-button" class="professor-interface" onclick="toggleView('professor-interface')">Valoration</button>
         </div>
         
         <div id="content-view" class="view-container active">
@@ -154,9 +160,10 @@
             <br>
         </div>
         <div id="professor-interface" class="view-container professor-interface">
-            <h2>Interface de Configuration</h2>
+            <h2>Valoration Professéur</h2>
             <label for="instruction">Instructions :</label>
             <textarea id="instruction" rows="4"></textarea>
+            <br><br/>
             <label for="value">Valeur de consigne :</label>
             <input type="number" id="value" min="0" max="100">
             <button onclick="submitProfessorData()">Envoyer</button>
@@ -174,8 +181,13 @@
     <script>
         function toggleRole() {
             let role = document.getElementById('role').value;
-            let professorElements = document.querySelectorAll('.professor-interface');
-            professorElements.forEach(el => el.style.display = role === 'professor' ? 'block' : 'none');
+            let professorButton = document.getElementById('professor-button');
+            if (role === 'professor') {
+                professorButton.style.display = 'block';
+            } else {
+                professorButton.style.display = 'none';
+                document.getElementById('professor-interface').style.display = 'none';
+            }
         }
         
         function toggleView(viewId) {
@@ -184,7 +196,10 @@
             });
             document.getElementById(viewId).classList.add('active');
         }
-        
+        function toggleProfessorInterface() {
+            let professorInterface = document.getElementById('professor-interface');
+            professorInterface.style.display = professorInterface.style.display === 'none' || professorInterface.style.display === '' ? 'block' : 'none';
+        }
         function submitProfessorData() {
             let instruction = document.getElementById('instruction').value;
             let value = document.getElementById('value').value;
