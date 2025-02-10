@@ -111,13 +111,12 @@
         <div class="button-container">
             <button onclick="toggleView('content-view')">Rapport</button>
             <button onclick="toggleView('camera-view')">Données et camera</button>
+            <button id="professor-button" class="professor-interface" onclick="toggleView('professor-interface')">Configuration</button>
         </div>
         
         <div id="content-view" class="view-container active">
             <h2>Contenu Défilable</h2>
-            <p>Bienvenue tout le monde à notre projet sur le remote controlled robotic system.</p>
-            <iframe src="PROJECTIDS.pdf#toolbar=0" width="100%" height="600px" style="border: none;"></iframe>
-            
+            <p>Bienvenue tout le monde à notre projet sur le remote controlled robotic system.</p>            
             <h3>Formules Mathématiques</h3>
             <p>Voici une équation en ligne : \( E = mc^2 \)</p>
             <p>Et une équation en bloc :</p>
@@ -126,8 +125,7 @@
                 \int_{a}^{b} x^2 \,dx = \frac{b^3}{3} - \frac{a^3}{3}
                 \]
             </div>
-        </div>
-        
+        </div>        
         <div id="camera-view" class="view-container">
             <h3>Vue de la Caméra</h3>
             <div class="camera-grid">
@@ -155,6 +153,14 @@
             <span id="DValue">0</span>
             <br>
         </div>
+        <div id="professor-interface" class="view-container professor-interface">
+            <h2>Interface de Configuration</h2>
+            <label for="instruction">Instructions :</label>
+            <textarea id="instruction" rows="4"></textarea>
+            <label for="value">Valeur de consigne :</label>
+            <input type="number" id="value" min="0" max="100">
+            <button onclick="submitProfessorData()">Envoyer</button>
+        </div>
     </div>
     
     <div class="footer">
@@ -166,11 +172,23 @@
     </div>
 
     <script>
+        function toggleRole() {
+            let role = document.getElementById('role').value;
+            let professorElements = document.querySelectorAll('.professor-interface');
+            professorElements.forEach(el => el.style.display = role === 'professor' ? 'block' : 'none');
+        }
+        
         function toggleView(viewId) {
             document.querySelectorAll('.view-container').forEach(view => {
                 view.classList.remove('active');
             });
             document.getElementById(viewId).classList.add('active');
+        }
+        
+        function submitProfessorData() {
+            let instruction = document.getElementById('instruction').value;
+            let value = document.getElementById('value').value;
+            alert(`Données envoyées :\nInstructions: ${instruction}\nValeur: ${value}`);
         }
     </script>
 </body>

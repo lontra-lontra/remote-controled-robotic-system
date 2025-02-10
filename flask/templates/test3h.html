@@ -20,7 +20,6 @@
             margin: 0;
             font-family: 'Arial', sans-serif;
             background-color: var(--background-blue);
-            text-align: center;
         }
         .header {
             background-color: var(--navy-blue);
@@ -38,14 +37,19 @@
             padding: 20px;
             background-color: white;
         }
+        .button-container {
+            margin-bottom: 20px;
+        }
         .view-container {
-            display: none;
             width: 100%;
             max-width: 800px;
-            margin-top: 20px;
+            display: none;
         }
         .active {
             display: block;
+        }
+        .professor-interface {
+            display: none;
         }
         button {
             background-color: var(--light-blue);
@@ -60,16 +64,11 @@
         button:hover {
             background-color: var(--navy-blue);
         }
-        input, textarea {
-            margin: 10px;
-            padding: 5px;
-            width: 80%;
-        }
     </style>
 </head>
-<body onload="checkUserRole()">
+<body onload="toggleRole()">
     <div class="header">
-        <h1>Bienvenue sur le Projet IDS</h1>
+        <h1>Project IDS: Remote Controlled Robotic System</h1>
         <div>
             <label for="role">Vous êtes :</label>
             <select id="role" onchange="toggleRole()">
@@ -80,37 +79,44 @@
     </div>
     
     <div class="main-content">
-        <div id="professor-interface" class="view-container">
-            <h2>Interface Professeur</h2>
+        <div class="button-container">
+            <button onclick="toggleView('content-view')">Rapport</button>
+            <button onclick="toggleView('camera-view')">Données et camera</button>
+            <button id="professor-button" class="professor-interface" onclick="toggleView('professor-interface')">Configuration</button>
+        </div>
+        
+        <div id="content-view" class="view-container active">
+            <h2>Contenu Défilable</h2>
+            <iframe src="PROJECTIDS.pdf#toolbar=0" width="100%" height="600px" style="border: none;"></iframe>
+        </div>
+        
+        <div id="camera-view" class="view-container">
+            <h3>Vue de la Caméra</h3>
+            <iframe src="graph?query=values_camera" width="100%" height="300px"></iframe>
+        </div>
+        
+        <div id="professor-interface" class="view-container professor-interface">
+            <h2>Interface de Configuration</h2>
             <label for="instruction">Instructions :</label>
             <textarea id="instruction" rows="4"></textarea>
             <label for="value">Valeur de consigne :</label>
             <input type="number" id="value" min="0" max="100">
             <button onclick="submitProfessorData()">Envoyer</button>
         </div>
-        
-        <div id="content-view" class="view-container active">
-            <h2>Rapport</h2>
-            <iframe src="PROJECTIDS.pdf#toolbar=0" width="100%" height="600px" style="border: none;"></iframe>
-        </div>
-        
-        <div id="camera-view" class="view-container">
-            <h3>Données et Caméra</h3>
-            <iframe src="graph?query=values_camera" width="100%" height="300px"></iframe>
-        </div>
     </div>
     
     <script>
-        function checkUserRole() {
-            let role = document.getElementById('role').value;
-            toggleRole(role);
-        }
-        
         function toggleRole() {
             let role = document.getElementById('role').value;
-            document.getElementById('professor-interface').style.display = role === 'professor' ? 'block' : 'none';
-            document.getElementById('content-view').style.display = 'block';
-            document.getElementById('camera-view').style.display = 'block';
+            let professorElements = document.querySelectorAll('.professor-interface');
+            professorElements.forEach(el => el.style.display = role === 'professor' ? 'block' : 'none');
+        }
+        
+        function toggleView(viewId) {
+            document.querySelectorAll('.view-container').forEach(view => {
+                view.classList.remove('active');
+            });
+            document.getElementById(viewId).classList.add('active');
         }
         
         function submitProfessorData() {
@@ -121,3 +127,4 @@
     </script>
 </body>
 </html>
+
