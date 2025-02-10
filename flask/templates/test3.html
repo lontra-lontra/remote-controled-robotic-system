@@ -133,10 +133,12 @@
             </div>
             <p>Donnez l'expression du Lagragien de ce système :</p>
             <p><i>Nota Bene : Le Lagragien est l'énergie cinétique moins l'énergie potentielle</i></p>
-                \\ ajouter une entree pour le lagragien
+            <textarea id="lagrangian" rows="4" placeholder="Entrez l'expression du Lagrangien ici"></textarea>
+            <button onclick="sendLagrangian()">Envoyer Lagrangien</button>
             <p>En utilisant la formule de D'Euler-Lagrange, donnez l'équation du système</p>
             <p><i>Nota Bene : \(\frac{\partial L}{\partial x} - \frac{d}{d t}(\frac{\partial L}{\partial \dot{x}})= 0\)</i></p>
-                \\ajouter une entree pour l'equation du systeme
+            <textarea id="eulerLagrange" rows="4" placeholder="Entrez l'équation du système ici"></textarea>
+            <button onclick="sendEulerLagrange()">Envoyer Euler-Lagrange</button>
             <h3>Controle avec un PID</h3>
             <p>Maintenant que nous avons accès à la physique du système, nous allons essayer de le contrôler grâce à un PID. Les nouvelles équations sont les suivantes : </p>
             <div>
@@ -217,6 +219,25 @@
             let instruction = document.getElementById('instruction').value;
             let value = document.getElementById('value').value;
             alert(`Données envoyées :\nInstructions: ${instruction}\nValeur: ${value}`);
+        }
+
+        function sendLagrangian() {
+            let lagrangian = document.getElementById('lagrangian').value;
+            console.log(`Lagrangien: ${lagrangian}`);
+            // You can also store the value in a variable or send it to a server
+        }
+
+        function sendEulerLagrange() {
+            let eulerLagrange = document.getElementById('eulerLagrange').value;
+            console.log(`Equation de Euler-Lagrange: ${eulerLagrange}`);
+            // You can also store the value in a variable or send it to a server
+        }
+
+        // Example of how to access the values
+        function accessValues() {
+            let lagrangian = document.getElementById('lagrangian').value;
+            let eulerLagrange = document.getElementById('eulerLagrange').value;
+            alert(`Lagrangien: ${lagrangian}\nEquation de Euler-Lagrange: ${eulerLagrange}`);
         }
     </script>
 </body>
