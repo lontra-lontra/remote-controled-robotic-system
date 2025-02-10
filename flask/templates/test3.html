@@ -46,6 +46,9 @@
             background-color: white;
         }
         .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
             margin-bottom: 20px;
         }
         .view-container {
@@ -90,6 +93,9 @@
         button:hover {
             background-color: var(--navy-blue);
         }
+        professor-interface {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -98,19 +104,25 @@
             <img src="http://127.0.0.1:1981/static/minesparisLOGO.png" alt="LOGO">
         </div>
         <h1>Project IDS: Remote Controled Robotic System</h1>
+        <div>
+            <label for="role">Vous êtes :</label>
+            <select id="role" onchange="toggleRole()">
+                <option value="professor">Professeur</option>
+                <option value="student" selected>Élève</option>
+            </select>
+        </div>
     </div>
     
     <div class="main-content">
         <div class="button-container">
             <button onclick="toggleView('content-view')">Rapport</button>
             <button onclick="toggleView('camera-view')">Données et camera</button>
+            <button id="professor-button" class="professor-interface" onclick="toggleView('professor-interface')">Valoration</button>
         </div>
         
         <div id="content-view" class="view-container active">
             <h2>Contenu Défilable</h2>
-            <p>Bienvenue tout le monde à notre projet sur le remote controlled robotic system.</p>
-            <iframe src="PROJECTIDS.pdf#toolbar=0" width="100%" height="600px" style="border: none;"></iframe>
-            
+            <p>Bienvenue tout le monde à notre projet sur le remote controlled robotic system.</p>            
             <h3>Formules Mathématiques</h3>
             <p>Voici une équation en ligne : \( E = mc^2 \)</p>
             <p>Et une équation en bloc :</p>
@@ -119,8 +131,7 @@
                 \int_{a}^{b} x^2 \,dx = \frac{b^3}{3} - \frac{a^3}{3}
                 \]
             </div>
-        </div>
-        
+        </div>        
         <div id="camera-view" class="view-container">
             <h3>Vue de la Caméra</h3>
             <div class="camera-grid">
@@ -148,6 +159,15 @@
             <span id="DValue">0</span>
             <br>
         </div>
+        <div id="professor-interface" class="view-container professor-interface">
+            <h2>Valoration Professéur</h2>
+            <label for="instruction">Instructions :</label>
+            <textarea id="instruction" rows="4"></textarea>
+            <br><br/>
+            <label for="value">Valeur de consigne :</label>
+            <input type="number" id="value" min="0" max="100">
+            <button onclick="submitProfessorData()">Envoyer</button>
+        </div>
     </div>
     
     <div class="footer">
@@ -159,11 +179,31 @@
     </div>
 
     <script>
+        function toggleRole() {
+            let role = document.getElementById('role').value;
+            let professorButton = document.getElementById('professor-button');
+            if (role === 'professor') {
+                professorButton.style.display = 'block';
+            } else {
+                professorButton.style.display = 'none';
+                document.getElementById('professor-interface').style.display = 'none';
+            }
+        }
+        
         function toggleView(viewId) {
             document.querySelectorAll('.view-container').forEach(view => {
                 view.classList.remove('active');
             });
             document.getElementById(viewId).classList.add('active');
+        }
+        function toggleProfessorInterface() {
+            let professorInterface = document.getElementById('professor-interface');
+            professorInterface.style.display = professorInterface.style.display === 'none' || professorInterface.style.display === '' ? 'block' : 'none';
+        }
+        function submitProfessorData() {
+            let instruction = document.getElementById('instruction').value;
+            let value = document.getElementById('value').value;
+            alert(`Données envoyées :\nInstructions: ${instruction}\nValeur: ${value}`);
         }
     </script>
 </body>
