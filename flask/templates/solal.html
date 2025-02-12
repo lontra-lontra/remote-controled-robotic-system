@@ -220,8 +220,16 @@
             <br>
         </div>
         <div id="professor-interface" class="view-container professor-interface">
+            <div id="password-container">
+                <label for="password-input">Entrez le mot de passe :</label>
+                <input type="password" id="password-input">
+                <button onclick="checkPassword()">Valider</button>
+            </div>
+            <div id="message-container" style="display: none; text-align: center; margin-top: 20px;">
+
             <h2>Section Professeur</h2>
             <p>Bienvenue dans la section professeur. Vous pouvez ici configurer les paramètres de l'expérience, et recevoir les reponses de votre eleve.</p>
+    
             <h3>Valeurs consigne pour le TP</h3>
             <div class="input-container">
                 <button onclick="saveVariable('q', 'q')">Veuillez rentrer le pourcentage l'ecart autorisé </button>
@@ -239,10 +247,17 @@
             <div class="display-section" id="displayEulerLagrange">
                 <p><strong>Équation d'Euler-Lagrange :</strong> <em>Chargement...</em></p>
             </div>
+            <h3>Donnees de Position et Vitesse </h3>
+            <div class="camera-grid">
+                <iframe src="graph?query=values_camera"></iframe>
+                <iframe src="/graph?query=values_speed_camera"></iframe>
+                <iframe src="/camera_view"></iframe>
+            </div>
             <br><br>
             <button onclick="clearValues()">Effacer toutes les valeurs</button>
 
-                
+        </div>
+
         </div>
     </div>
 
@@ -331,6 +346,21 @@
             localStorage.removeItem('q');
             localStorage.removeItem('p');
             displayValues();
+        }
+
+        function showPasswordInput() {
+            document.getElementById("password-container").style.display = "block";
+        }
+
+        function checkPassword() {
+            let password = document.getElementById("password-input").value;
+            if (password === "QUATI") {
+                document.getElementById("password-container").style.display = "none";
+                document.getElementById("message-container").style.display = "block";
+                document.getElementById("professor-interface").classList.add("active");
+            } else {
+                alert("Mot de passe incorrect.");
+            }
         }
 
         // Charger les valeurs enregistrées au démarrage de la page
