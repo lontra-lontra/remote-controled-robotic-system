@@ -40,31 +40,36 @@ values_motor =[]
 
 if config["camera"]:
     picam2 = Picamera2()
-    # Initialize the camera
-    
-    full_width, full_height = picam2.sensor_resolution
 
     # Configure camera
-    new_width = 640
-    new_height = 480
-    x_offset = 0 # Centrer horizontalement
-    y_offset = 0  # Centrer verticalement
+    full_width, full_height = picam2.sensor_resolution
+    print(f"Résolution du capteur : {full_width}x{full_height}")
 
-    # Configuration avec toute la résolution du capteur (mode preview)
+    # Définir une zone de recadrage en % (0 = début, 1 = fin)
+    roi_x = 0.25  # Décalage horizontal (0 = début, 1 = toute l'image)
+    roi_y = 0.25  # Décalage vertical
+    roi_w = 0.5   # Largeur de la zone affichée (1 = toute l'image, 0.5 = moitié)
+    roi_h = 0.5   # Hauteur de la zone affichée
+
+    # Appliquer la région d'intérêt (ROI) pour recadrer
+    picam2.set_controls({"ScalerCrop": (
+        int(roi_x * full_width),
+        int(roi_y * full_height),
+        int(roi_w * full_width),
+        int(roi_h * full_height)
+    )})
+
+    # Configurer la caméra avec l’image complète et prévisualisation 640x480
     picam2.configure(
         picam2.create_preview_configuration(
-            main={"size": (640, 480)},  # Taille de sortie
-            raw={"size": picam2.sensor_resolution},  # Capture toute la résolution du capteur
+            main={"size": (640, 480)},
+            raw={"size": picam2.sensor_resolution},  
             buffer_count=2
         )
     )
-
-    # Appliquer le recadrage **avant** de démarrer la caméra
-    picam2.set_controls({"ScalerCrop": (x_offset, y_offset, new_width, new_height)})
-    picam2.start()
     
     # Allow camera to warm up
-    time.sleep(6)
+    time.sleep(3)
     
 
 
