@@ -4,13 +4,9 @@
     <meta charset="UTF-8">
     <title>PID Controller Overview</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chart.js/3.7.1/chart.min.js"></script>
-    <script type="text/javascript" async
-        src="https://polyfill.io/v3/polyfill.min.js?features=es6">
-    </script>
-    <script type="text/javascript" async
-        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js">
-    </script>
-
+    <script type="text/javascript" async src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js"></script>
+    
     <style>
         :root {
             --navy-blue: #1A3D5E;
@@ -31,11 +27,7 @@
             display: flex;
             align-items: center;
             padding: 10px 20px;
-        }
-        .logo img {
-            width: 100px;
-            height: auto;
-            margin-right: 15px;
+            justify-content: space-between;
         }
         .main-content {
             flex-grow: 1;
@@ -46,9 +38,6 @@
             background-color: white;
         }
         .button-container {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
             margin-bottom: 20px;
         }
         .view-container {
@@ -59,27 +48,8 @@
         .active {
             display: block;
         }
-        .camera-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            max-width: 1300px;
-            margin: auto;
-        }
-        iframe {
-            width: 100%;
-            height: 300px;
-            border: 1px solid #ccc;
-        }
-        .footer {
-            background-color: var(--navy-blue);
-            color: white;
-            display: flex;
-            justify-content: space-around;
-            padding: 10px;
+        .professor-interface {
+            display: none;
         }
         button {
             background-color: var(--light-blue);
@@ -89,21 +59,19 @@
             cursor: pointer;
             font-size: 16px;
             border-radius: 5px;
+            margin: 10px;
         }
         button:hover {
             background-color: var(--navy-blue);
         }
-        professor-interface {
-            display: none;
-        }
     </style>
 </head>
-<body>
+<body onload="toggleRole()">
     <div class="header">
         <div class="logo">
             <img src="http://127.0.0.1:1981/static/minesparisLOGO.png" alt="LOGO">
         </div>
-        <h1>Project IDS: Remote Controled Robotic System</h1>
+        <h1>Project IDS: Remote Controlled Robotic System</h1>
         <div>
             <label for="role">Vous êtes :</label>
             <select id="role" onchange="toggleRole()">
@@ -112,42 +80,28 @@
             </select>
         </div>
     </div>
-
+    
     <div class="main-content">
         <div class="button-container">
             <button onclick="toggleView('content-view')">Rapport</button>
             <button onclick="toggleView('camera-view')">Données et camera</button>
-            <button id="professor-button" class="professor-interface" onclick="toggleView('professor-interface')">Valoration</button>
+            <button id="professor-button" class="professor-interface" onclick="toggleView('professor-interface')">Configuration</button>
         </div>
-
+        
         <div id="content-view" class="view-container active">
-            <h2>Travaux pratiques d’Automatique en ligne</h2>
-            <p>Bienvenue sur le projet d’Automatique en ligne !</p>
-            <h3>Introduction</h3>
-            <p>Le but de ces travaux pratiques est de  modéliser et contrôler le comportement physique d'une boule. Dans un premier temps, nous allons modéliser le comportement physique du système ; il va vous être demandé d'envoyer les réponses aux professeurs. Dans un second temps, nous vous donnerons accès à un système physique, et nous vous demanderons de contrôler ce système grâce à un  contrôle PID en respectant certains objectifs de performance.
-            </p>
-            <h3>Mise en Equation</h3>
-            <p>La boule se situe sur un axe dont on peut contrôler son angle \(\theta\) en son milieu. Elle a une masse \(m\), un rayon \(R\) un moment d'inertie \(J = \frac{2}{5}mR^2\). La gravité est notée \(g\). On choisit un repère dont le centre est le centre de rotation, on note \(x\) la distance du centre de la balle avec le centre du repère.</p>
-            <div> 
-                <img src="{{ url_for('static', filename='schema.png') }}" alt="Schema">
-            </div>
-            <p>Donnez l'expression du Lagragien de ce système :</p>
-            <p><i>Nota Bene : Le Lagragien est l'énergie cinétique moins l'énergie potentielle</i></p>
-            <textarea id="lagrangian" rows="4" placeholder="Entrez l'expression du Lagrangien ici"></textarea>
-            <button onclick="sendLagrangian()">Envoyer Lagrangien</button>
-            <p>En utilisant la formule de D'Euler-Lagrange, donnez l'équation du système</p>
-            <p><i>Nota Bene : \(\frac{\partial L}{\partial x} - \frac{d}{d t}(\frac{\partial L}{\partial \dot{x}})= 0\)</i></p>
-            <textarea id="eulerLagrange" rows="4" placeholder="Entrez l'équation du système ici"></textarea>
-            <button onclick="sendEulerLagrange()">Envoyer Euler-Lagrange</button>
-            <h3>Controle avec un PID</h3>
-            <p>Maintenant que nous avons accès à la physique du système, nous allons essayer de le contrôler grâce à un PID. Les nouvelles équations sont les suivantes : </p>
+            <h2>Contenu Défilable</h2>
+            <p>Bienvenue tout le monde à notre projet sur le remote controlled robotic system.</p>
+            <h3>Formules Mathématiques</h3>
+            <p>Voici une équation en ligne : \( E = mc^2 \)</p>
+            <p>Et une équation en bloc :</p>
             <div>
                 \[
-                \ddot{x} = \frac{5}{7} g \sin\big(K_p e(t) + K_i \int_0^t e(\tau) \, d\tau + K_d \frac{d e(t)}{dt}\big)
+                \int_{a}^{b} x^2 \,dx = \frac{b^3}{3} - \frac{a^3}{3}
                 \]
             </div>
-            <p>Avec modélisation  effectuée avec le langage de ton choix (Matlab avec Simulink, Python avec Scipy etc...), trouve les bons paramètres pour réussir à te stabiliser la boule au milieu  de l'axe en partant du bord. Les consignes de performance sont les suivantes :</p>
-            </div>
+            
+        </div>
+        
         <div id="camera-view" class="view-container">
             <h3>Vue de la Caméra</h3>
             <div class="camera-grid">
@@ -175,71 +129,38 @@
             <span id="DValue">0</span>
             <br>
         </div>
+        
         <div id="professor-interface" class="view-container professor-interface">
-            <h2>Valoration Professéur</h2>
+            <h2>Interface de Configuration</h2>
             <label for="instruction">Instructions :</label>
             <textarea id="instruction" rows="4"></textarea>
-            <br><br/>
             <label for="value">Valeur de consigne :</label>
             <input type="number" id="value" min="0" max="100">
             <button onclick="submitProfessorData()">Envoyer</button>
         </div>
     </div>
-
-    <div class="footer">
-        <span>Solal Raymondjean</span>
-        <span>Ian Ribeiro</span>
-        <span>Davi Loucena</span>
-        <span>Yanis Marmier</span>
-        <span>Ana Corrales</span>
-    </div>
-
+    
     <script>
         function toggleRole() {
             let role = document.getElementById('role').value;
-            let professorButton = document.getElementById('professor-button');
-            if (role === 'professor') {
-                professorButton.style.display = 'block';
-            } else {
-                professorButton.style.display = 'none';
-                document.getElementById('professor-interface').style.display = 'none';
-            }
+            let professorElements = document.querySelectorAll('.professor-interface');
+            professorElements.forEach(el => el.style.display = role === 'professor' ? 'block' : 'none');
         }
-
+        
         function toggleView(viewId) {
             document.querySelectorAll('.view-container').forEach(view => {
                 view.classList.remove('active');
             });
             document.getElementById(viewId).classList.add('active');
         }
-        function toggleProfessorInterface() {
-            let professorInterface = document.getElementById('professor-interface');
-            professorInterface.style.display = professorInterface.style.display === 'none' || professorInterface.style.display === '' ? 'block' : 'none';
-        }
+        
         function submitProfessorData() {
             let instruction = document.getElementById('instruction').value;
             let value = document.getElementById('value').value;
             alert(`Données envoyées :\nInstructions: ${instruction}\nValeur: ${value}`);
         }
-
-        function sendLagrangian() {
-            let lagrangian = document.getElementById('lagrangian').value;
-            console.log(`Lagrangien: ${lagrangian}`);
-            // You can also store the value in a variable or send it to a server
-        }
-
-        function sendEulerLagrange() {
-            let eulerLagrange = document.getElementById('eulerLagrange').value;
-            console.log(`Equation de Euler-Lagrange: ${eulerLagrange}`);
-            // You can also store the value in a variable or send it to a server
-        }
-
-        // Example of how to access the values
-        function accessValues() {
-            let lagrangian = document.getElementById('lagrangian').value;
-            let eulerLagrange = document.getElementById('eulerLagrange').value;
-            alert(`Lagrangien: ${lagrangian}\nEquation de Euler-Lagrange: ${eulerLagrange}`);
-        }
     </script>
 </body>
 </html>
+
+
