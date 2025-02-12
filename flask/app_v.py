@@ -42,7 +42,8 @@ if config["camera"]:
     picam2 = Picamera2()
     # Initialize the camera
     
-    
+    full_width, full_height = picam2.sensor_resolution
+
     # Configure camera
     zoom_factor = 2  # Facteur de zoom
     new_width = full_width // zoom_factor
