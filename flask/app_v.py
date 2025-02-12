@@ -337,12 +337,12 @@ def reset_timer():
     time_zero = time.time() # reset the time to zero
                             # reset arduino time to zero
     GPIO.setmode(GPIO.BCM)
-    GPIO.setup(2, GPIO.OUT)
+    GPIO.setup(17, GPIO.OUT)
     # Set GPIO2 high
-    GPIO.output(2, GPIO.HIGH)
+    GPIO.output(17, GPIO.HIGH)
     time.sleep(0.1)
     # Set GPIO2 low
-    GPIO.output(2, GPIO.LOW)
+    GPIO.output(17, GPIO.LOW)
 
     # Clean up GPIO
     #GPIO.cleanup()
