@@ -345,7 +345,7 @@ def reset_timer():
     GPIO.output(2, GPIO.LOW)
 
     # Clean up GPIO
-    GPIO.cleanup()
+    #GPIO.cleanup()
 
 def reset_values():
     global values
