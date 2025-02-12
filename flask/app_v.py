@@ -283,7 +283,7 @@ def f_values_camera_filtered():
 @app.route('/control', methods=['GET'])
 def f_control():
     values_camera_filtered = low_pass_filter(values)
-    return render_template('g.html')
+    return render_template('control.html')
 
 
 
