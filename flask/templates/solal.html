@@ -37,6 +37,15 @@
             height: auto;
             margin-right: 15px;
         }
+        #displayContainer {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            display: inline-block;
+            min-width: 50%;
+            background-color: #f9f9f9;
+        }
+
         .main-content {
             flex-grow: 1;
             display: flex;
@@ -45,6 +54,13 @@
             padding: 20px;
             background-color: white;
         }
+        .input-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 10px 0;
+        }
+
         .button-container {
             display: flex;
             justify-content: center;
@@ -81,6 +97,13 @@
             justify-content: space-around;
             padding: 10px;
         }
+        input {
+            width: 40%;
+            padding: 10px;
+            font-size: 16px;
+            margin-left: 10px;
+        }
+
         button {
             background-color: var(--light-blue);
             color: white;
@@ -89,6 +112,7 @@
             cursor: pointer;
             font-size: 16px;
             border-radius: 5px;
+            margin-left: 15px;
         }
         button:hover {
             background-color: var(--navy-blue);
@@ -133,12 +157,21 @@
             </div>
             <p>Donnez l'expression du Lagragien de ce système :</p>
             <p><i>Nota Bene : Le Lagragien est l'énergie cinétique moins l'énergie potentielle</i></p>
-            <textarea id="lagrangian" rows="4" placeholder="Entrez l'expression du Lagrangien ici"></textarea>
-            <button onclick="sendLagrangian()">Envoyer Lagrangien</button>
+            <label for="lagrangian"><strong>Lagrangien :</strong></label>
+            <div class="input-container">
+                <button onclick="saveVariable('Lagrangien', 'lagrangian')">Envoyer le Lagrangien</button>
+                <input type="text" id="lagrangian" placeholder="Exemple : L = T - V">
+            </div>
+
             <p>En utilisant la formule de D'Euler-Lagrange, donnez l'équation du système</p>
             <p><i>Nota Bene : \(\frac{\partial L}{\partial x} - \frac{d}{d t}(\frac{\partial L}{\partial \dot{x}})= 0\)</i></p>
-            <textarea id="eulerLagrange" rows="4" placeholder="Entrez l'équation du système ici"></textarea>
-            <button onclick="sendEulerLagrange()">Envoyer Euler-Lagrange</button>
+            <label for="eulerLagrange"><strong>Équation d'Euler-Lagrange :</strong></label>
+            <div class="input-container">
+                <button onclick="saveVariable('EulerLagrange', 'eulerLagrange')"> Envoyer les équations du mouvement</button>
+                <input type="text" id="eulerLagrange" placeholder="Exemple : d/dt(∂L/∂q̇) - ∂L/∂q = 0">
+            </div>
+                
+
             <h3>Controle avec un PID</h3>
             <p>Maintenant que nous avons accès à la physique du système, nous allons essayer de le contrôler grâce à un PID. Les nouvelles équations sont les suivantes : </p>
             <div>
@@ -147,6 +180,17 @@
                 \]
             </div>
             <p>Avec modélisation  effectuée avec le langage de ton choix (Matlab avec Simulink, Python avec Scipy etc...), trouve les bons paramètres pour réussir à te stabiliser la boule au milieu  de l'axe en partant du bord. Les consignes de performance sont les suivantes :</p>
+            <div class="display-section" id="displayQ">
+                <p><strong>Un ecart a la consigne maximal de  :</strong> <em>Chargement...</em></p>
+            </div>
+            <br><br>
+    
+            <br>
+        
+            <div class="display-section" id="displayP">
+                <p><strong>Un temps de reponse maximal de :</strong> <em>Chargement...</em></p>
+            </div>
+        
             </div>
         <div id="camera-view" class="view-container">
             <h3>Vue de la Caméra</h3>
@@ -176,18 +220,43 @@
             <br>
         </div>
         <div id="professor-interface" class="view-container professor-interface">
-            <h2>Section Professeur</h2>
-            <label for="instruction">Instructions :</label>
-            <textarea id="instruction" rows="4"></textarea>
-            <br><br/>
-            <label for="value">Valeur de consigne :</label>
-            <input type="number" id="value" min="0" max="100">
-            <button onclick="submitProfessorData()">Envoyer</button>
-]            <p id="displayValue">Chargement...</p>
-            <button onclick="clearLagrange()">Effacer la valeur stockée</button>
-            <p id="displayValue">Chargement...</p>
-            <button onclick="clearEulerLagrange()">Effacer la valeur stockée</button>
+            <div id="password-container">
+                <label for="password-input">Entrez le mot de passe :</label>
+                <input type="password" id="password-input">
+                <button onclick="checkPassword()">Valider</button>
+            </div>
+            <div id="message-container" style="display: none; text-align: center; margin-top: 20px;">
 
+            <h2>Section Professeur</h2>
+            <p>Bienvenue dans la section professeur. Vous pouvez ici configurer les paramètres de l'expérience, et recevoir les reponses de votre eleve.</p>
+    
+            <h3>Valeurs consigne pour le TP</h3>
+            <div class="input-container">
+                <button onclick="saveVariable('q', 'q')">Veuillez rentrer le pourcentage l'ecart autorisé </button>
+                <input type="text" id="q" placeholder="Exemple : Ecart = 10%">
+            </div>
+            <div class="input-container">
+                <button onclick="saveVariable('p', 'p')"> Veuillez rentrer le temps de reponse autorisé</button>
+                <input type="text" id="p" placeholder="Exemple : t = 1 s">
+            </div>        
+            <h3>Reponses de l'élève </h3>
+            <div class="display-section" id="displayLagrangian">
+                <p><strong>Lagrangien :</strong> <em>Chargement...</em></p>
+            </div>
+            <br><br>
+            <div class="display-section" id="displayEulerLagrange">
+                <p><strong>Équation d'Euler-Lagrange :</strong> <em>Chargement...</em></p>
+            </div>
+            <h3>Donnees de Position et Vitesse </h3>
+            <div class="camera-grid">
+                <iframe src="graph?query=values_camera"></iframe>
+                <iframe src="/graph?query=values_speed_camera"></iframe>
+                <iframe src="/camera_view"></iframe>
+            </div>
+            <br><br>
+            <button onclick="clearValues()">Effacer toutes les valeurs</button>
+
+        </div>
 
         </div>
     </div>
@@ -228,41 +297,74 @@
             alert(`Données envoyées :\nInstructions: ${instruction}\nValeur: ${value}`);
         }
 
-        function sendLagrangian() {
-            let Lagrangian = document.getElementById('lagrangian').value;
-            localStorage.setItem('lagrangian', Lagrangian); // Stocker dans localStorage
-            displayLagrangian(); // Mettre à jour l'affichage
+        // Fonction pour sauvegarder une variable spécifique
+        function saveVariable(varName, inputId) {
+            let value = document.getElementById(inputId).value;
+            if (value.trim() === "") {
+                alert("Veuillez entrer une valeur pour " + varName + " !");
+                return;
+            }
+            localStorage.setItem(varName, value);
+            displayValues();
         }
 
-        function displayLagrangian() {
-            let storedValue = localStorage.getItem('lagrangian');
-            document.getElementById('displayValue').innerText = storedValue ? storedValue : "Aucune valeur enregistrée.";
+        // Fonction pour afficher les valeurs stockées
+        function displayValues() {
+            // Groupe 1 : Lagrangien et Euler-Lagrange
+            let storedLagrangian = localStorage.getItem('Lagrangien') || "Aucune valeur enregistrée.";
+            let storedEulerLagrange = localStorage.getItem('EulerLagrange') || "Aucune valeur enregistrée.";
+
+            document.getElementById('displayLagrangian').innerHTML = `
+                <strong>Lagrangien :</strong><br>
+                <em>${storedLagrangian}</em>
+            `;
+
+            document.getElementById('displayEulerLagrange').innerHTML = `
+                <strong>Équation d'Euler-Lagrange :</strong><br>
+                <em>${storedEulerLagrange}</em>
+            `;
+
+            // Groupe 2 : Variables q et p
+            let storedQ = localStorage.getItem('q') || "Aucune valeur enregistrée.";
+            let storedP = localStorage.getItem('p') || "Aucune valeur enregistrée.";
+
+            document.getElementById('displayQ').innerHTML = `
+                <strong>Un ecart a la consigne maximal de :</strong><br>
+                <em>${storedQ}</em>
+            `;
+
+            document.getElementById('displayP').innerHTML = `
+                <strong>Un temps de reponse maximal de :</strong><br>
+                <em>${storedP}</em>
+            `;
         }
 
-        // Fonction pour effacer la valeur stockée
-        function clearLagrangian() {
-            localStorage.removeItem('lagrangian');
-            displayLagrangian(); // Rafraîchir l'affichage
+        // Fonction pour effacer toutes les valeurs stockées
+        function clearValues() {
+            localStorage.removeItem('Lagrangien');
+            localStorage.removeItem('EulerLagrange');
+            localStorage.removeItem('q');
+            localStorage.removeItem('p');
+            displayValues();
         }
 
-        function sendEulerLagrange() {
-            let eulerLagrange = document.getElementById('eulerLagrange').value;
-            localStorage.setItem('eulerLagrange', eulerLagrange); // Stocker dans localStorage
-            displayEulerLagrange(); // Mettre à jour l'affichage
+        function showPasswordInput() {
+            document.getElementById("password-container").style.display = "block";
         }
 
-        function displayEulerLagrange() {
-            let storedValue = localStorage.getItem('eulerLagrange');
-            document.getElementById('displayValue').innerText = storedValue ? storedValue : "Aucune valeur enregistrée.";
+        function checkPassword() {
+            let password = document.getElementById("password-input").value;
+            if (password === "QUATI") {
+                document.getElementById("password-container").style.display = "none";
+                document.getElementById("message-container").style.display = "block";
+                document.getElementById("professor-interface").classList.add("active");
+            } else {
+                alert("Mot de passe incorrect.");
+            }
         }
 
-        // Fonction pour effacer la valeur stockée
-        function clearEulerLagrange() {
-            localStorage.removeItem('eulerLagrange');
-            displayEulerLagrange(); // Rafraîchir l'affichage
-        }
-
-        // Example of how to access the values
+        // Charger les valeurs enregistrées au démarrage de la page
+        window.onload = displayValues;
     </script>
 </body>
 </html>
