@@ -280,6 +280,13 @@ def f_values_camera_filtered():
     return jsonify(values_camera_filtered)
 
 
+@app.route('/control', methods=['GET'])
+def f_control():
+    values_camera_filtered = low_pass_filter(values)
+    return render_template('g.html')
+
+
+
 @app.route('/values_derivative_of_camera_filtered', methods=['GET'])
 def f_values_derivative_of_camera_filtered():
     if len(values) > 1:
@@ -318,6 +325,10 @@ def reset():
     reset_timer()
     reset_values()
     return jsonify({"message": "Timer and values reset successfully"}), 200
+
+
+
+
 
 def reset_timer():
     # Set up GPIO
