@@ -45,7 +45,9 @@ if config["camera"]:
     
     # Configure camera
 
-    picam2.configure(picam2.create_preview_configuration(main={"size": (640, 480)}, buffer_count=2))
+    picam2.configure(picam2.create_preview_configuration(main={"size": (640, 480)}, 
+                                                        raw={"size": picam2.sensor_resolution},  # Utilise toute la résolution du capteur
+                                                        buffer_count=2))
     
     # Start the camera
     picam2.start()
