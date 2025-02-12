@@ -104,20 +104,13 @@
             <img src="http://127.0.0.1:1981/static/minesparisLOGO.png" alt="LOGO">
         </div>
         <h1>Project IDS: Remote Controled Robotic System</h1>
-        <div>
-            <label for="role">Vous êtes :</label>
-            <select id="role" onchange="toggleRole()">
-                <option value="professor">Professeur</option>
-                <option value="student" selected>Élève</option>
-            </select>
-        </div>
     </div>
 
     <div class="main-content">
         <div class="button-container">
             <button onclick="toggleView('content-view')">Rapport</button>
             <button onclick="toggleView('camera-view')">Données et camera</button>
-            <button id="professor-button" class="professor-interface" onclick="toggleView('professor-interface')">Valoration</button>
+            <button id="professor-button" class="professor-interface" onclick="toggleView('professor-interface')">Professeur</button>
         </div>
 
         <div id="content-view" class="view-container active">
@@ -175,12 +168,23 @@
             <span id="DValue">0</span>
             <br>
         </div>
-        <div id="professor-interface" class="view-container professor-interface">
-            <h2>Section Professeur</h2>
+        
+        <div id="password-container">
+            <label for="password-input">Entrez le mot de passe :</label>
+            <input type="password" id="password-input">
+            <button onclick="checkPassword()">Valider</button>
+        </div>
+
+        <div id="message-container" style="display: none; text-align: center; margin-top: 20px;">
+            <p>Accès autorisé ! Bienvenue dans la section Professeur.</p>
             <label for="instruction">Instructions :</label>
             <textarea id="instruction" rows="4"></textarea>
             <br><br/>
-            <label for="value">Valeur de consigne :</label>
+            <label for="value">VAR ECARI :</label>
+            <input type="number" id="value" min="0" max="100">
+            <button onclick="submitProfessorData()">Envoyer</button>
+            <br><br/>
+            <label for="value">VAR DELAI :</label>
             <input type="number" id="value" min="0" max="100">
             <button onclick="submitProfessorData()">Envoyer</button>
         </div>
@@ -239,6 +243,20 @@
             let lagrangian = document.getElementById('lagrangian').value;
             let eulerLagrange = document.getElementById('eulerLagrange').value;
             alert(`Lagrangien: ${lagrangian}\nEquation de Euler-Lagrange: ${eulerLagrange}`);
+        }
+        function showPasswordInput() {
+            document.getElementById("password-container").style.display = "block";
+        }
+
+        function checkPassword() {
+            let password = document.getElementById("password-input").value;
+            if (password === "LONTRA") {
+                document.getElementById("password-container").style.display = "none";
+                document.getElementById("message-container").style.display = "block";
+                document.getElementById("professor-interface").classList.add("active");
+            } else {
+                alert("Mot de passe incorrect.");
+            }
         }
     </script>
 </body>
