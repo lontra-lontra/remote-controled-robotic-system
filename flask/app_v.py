@@ -44,12 +44,23 @@ if config["camera"]:
     
     
     # Configure camera
+    zoom_factor = 2  # Facteur de zoom
+    new_width = full_width // zoom_factor
+    new_height = full_height // zoom_factor
+    x_offset = (full_width - new_width) // 2  # Centrer horizontalement
+    y_offset = (full_height - new_height) // 2  # Centrer verticalement
 
-    picam2.configure(picam2.create_preview_configuration(main={"size": (640, 480)}, 
-                                                        raw={"size": picam2.sensor_resolution},  # Utilise toute la résolution du capteur
-                                                        buffer_count=2))
-    picam2.set_controls({"ScalerCrop": (500, 100, 640, 480)})
-    # Start the camera
+    # Configuration avec toute la résolution du capteur (mode preview)
+    picam2.configure(
+        picam2.create_preview_configuration(
+            main={"size": (640, 480)},  # Taille de sortie
+            raw={"size": picam2.sensor_resolution},  # Capture toute la résolution du capteur
+            buffer_count=2
+        )
+    )
+
+    # Appliquer le recadrage **avant** de démarrer la caméra
+    picam2.set_controls({"ScalerCrop": (x_offset, y_offset, new_width, new_height)})
     picam2.start()
     
     # Allow camera to warm up
