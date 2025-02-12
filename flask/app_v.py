@@ -235,13 +235,13 @@ def camera_view():
 #%def index_ancien():
 #    return render_template('test.html')
 
-@app.route('/new')
-def index_new():
-    return render_template('test3.html')
-
 @app.route('/')
-def index():
-    return render_template('test.html')
+def index_new():
+    return render_template('final.html')
+
+#@app.route('/')
+#def index():
+#    return render_template('test.html')
 
 
 @app.route('/graph')
