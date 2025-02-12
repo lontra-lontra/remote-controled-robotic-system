@@ -251,6 +251,10 @@ def index():
 def g():
     return render_template('g.html')
 
+@app.route('/graphgraph')
+def gg():
+    return render_template('gg.html')
+
 @app.route('/values', methods=['GET'])
 def l():
     return jsonify(values_sensor)
