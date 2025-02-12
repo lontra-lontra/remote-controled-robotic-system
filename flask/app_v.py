@@ -45,11 +45,10 @@ if config["camera"]:
     full_width, full_height = picam2.sensor_resolution
 
     # Configure camera
-    zoom_factor = 3  # Facteur de zoom
-    new_width = full_width // zoom_factor
-    new_height = full_height // zoom_factor
-    x_offset = (full_width - new_width) // 2  # Centrer horizontalement
-    y_offset = (full_height - new_height) // 2  # Centrer verticalement
+    new_width = 640
+    new_height = 480
+    x_offset = 0 # Centrer horizontalement
+    y_offset = 0  # Centrer verticalement
 
     # Configuration avec toute la résolution du capteur (mode preview)
     picam2.configure(
