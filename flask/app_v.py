@@ -60,6 +60,7 @@ if config["camera"]:
     )
 
     # Appliquer le recadrage **avant** de démarrer la caméra
+    picam2.set_controls({"ScalerCrop": (x_offset, y_offset, new_width, new_height)})
     picam2.start()
     
     # Allow camera to warm up
