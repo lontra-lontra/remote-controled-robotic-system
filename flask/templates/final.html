@@ -202,22 +202,8 @@
                 <iframe src="/graph?query=values_camera_filtered"></iframe>
                 <iframe src="/graph?query=values_derivative_of_camera_filtered"></iframe>
                 <iframe src="/camera_view"></iframe>
+                <iframe src="/control"></iframe>
             </div>
-            <h2>Ici le PID:</h2>
-            <button onclick="sendMessage()">Send</button>
-            <br><br/>
-            <label for="PInput">P: </label>
-            <input type="range" id="PInput" min="0" max="400" step="1" oninput="document.getElementById('PValue').innerText = this.value; sendMessage();">
-            <span id="PValue">0</span>
-            <br>
-            <label for="IInput">I: </label>
-            <input type="range" id="IInput" min="0" max="400" step="1" oninput="document.getElementById('IValue').innerText = this.value; sendMessage();">
-            <span id="IValue">0</span>
-            <br>
-            <label for="DInput">D: </label>
-            <input type="range" id="DInput" min="0" max="400" step="1" oninput="document.getElementById('DValue').innerText = this.value; sendMessage();">
-            <span id="DValue">0</span>
-            <br>
         </div>
         <div id="professor-interface" class="view-container professor-interface">
             <div id="password-container">
@@ -252,6 +238,7 @@
                 <iframe src="graph?query=values_camera"></iframe>
                 <iframe src="/graph?query=values_speed_camera"></iframe>
                 <iframe src="/camera_view"></iframe>
+                <iframe src="/control" width="640" height="480"></iframe>
             </div>
             <br><br>
             <button onclick="clearValues()">Effacer toutes les valeurs</button>
