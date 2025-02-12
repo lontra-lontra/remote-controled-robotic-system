@@ -80,66 +80,7 @@
     </div>
     <p>Academic year: 2024/2025 </p>
     
-    <h2>Ici le PID:</h2>
-    <button onclick="sendMessage()">Send</button>
-    <br>
-    <label for="PInput">P: </label>
-    <input type="range" id="PInput" min="0" max="400" step="1" oninput="document.getElementById('PValue').innerText = this.value">
-    <span id="PValue">0</span>
-    <br>
-    <label for="IInput">I: </label>
-    <input type="range" id="IInput" min="0" max="400" step="1" oninput="document.getElementById('IValue').innerText = this.value">
-    <span id="IValue">0</span>
-    <br>
-    <label for="DInput">D: </label>
-    <input type="range" id="DInput" min="0" max="400" step="1" oninput="document.getElementById('DValue').innerText = this.value">
-    <span id="DValue">0</span>
-    <br>
-    <label for="BiasDistance">Bias Distance: </label>
-    <input type="range" id="BiasDistance" min="0" max="200" step="1" value="112" oninput="document.getElementById('BiasDistanceValue').innerText = this.value">
-    <span id="BiasDistanceValue">112</span>
-    <br>
-    <label for="BiasMotor">Bias Motor: </label>
-    <input type="range" id="BiasMotor" min="0" max="200" step="1" value="82" oninput="document.getElementById('BiasMotorValue').innerText = this.value">
-    <span id="BiasMotorValue">82</span>
-    <br>
-
-    <script>
-        async function sendMessage() {
-            const PInput = document.getElementById("PInput").value;
-            const IInput = document.getElementById("IInput").value;
-            const DInput = document.getElementById("DInput").value;
-            const BiasDistance = document.getElementById("BiasDistance").value;
-            const BiasMotor = document.getElementById("BiasMotor").value;
-
-            const jsonData = {
-                "BlockID": "webpub 1",
-                "Signal": [
-                    { "DataType": "single", "Value": [PInput] },
-                    { "DataType": "single", "Value": [IInput] },
-                    { "DataType": "single", "Value": [DInput] },
-                    { "DataType": "single", "Value": [BiasDistance] },
-                    { "DataType": "single", "Value": [BiasMotor] }
-                ]
-            };
-
-            try {
-                const response = await fetch('/api/send-data', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(jsonData)
-                });
-
-                if (response.ok) {
-                    console.log('Data sent successfully');
-                } else {
-                    console.error('Error sending data:', response.statusText);
-                }
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        }
-    </script>
+    
 
 
 <iframe src="graph?query=values_camera" width="640" height="480"></iframe>
@@ -149,6 +90,7 @@
 <iframe src="/graph?query=values_camera_filtered" width="640" height="480"></iframe>
 <iframe src="/graph?query=values_derivative_of_camera_filtered" width="640" height="480"></iframe>
 <iframe src="/camera_view" width="640" height="480"></iframe>
+<iframe src="/control" width="640" height="480"></iframe>
 
 
 

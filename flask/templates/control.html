@@ -22,7 +22,26 @@
 <input type="range" id="BiasMotor" min="0" max="200" step="1" value="82" oninput="document.getElementById('BiasMotorValue').innerText = this.value">
 <span id="BiasMotorValue">82</span>
 <br>
+<button onclick="resetValues()">Reset</button>
 
+<script>
+    async function resetValues() {
+        try {
+            const response = await fetch('/reset', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            if (response.ok) {
+                console.log('Timer and values reset successfully');
+            } else {
+                console.error('Error resetting values:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+</script>
 <script>
     async function sendMessage() {
         const PInput = document.getElementById("PInput").value;
