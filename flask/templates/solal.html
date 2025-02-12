@@ -176,6 +176,7 @@
             <br>
         </div>
         <div id="professor-interface" class="view-container professor-interface">
+            window.onload = displayEulerLagrange;
             <h2>Section Professeur</h2>
             <label for="instruction">Instructions :</label>
             <textarea id="instruction" rows="4"></textarea>
@@ -183,6 +184,9 @@
             <label for="value">Valeur de consigne :</label>
             <input type="number" id="value" min="0" max="100">
             <button onclick="submitProfessorData()">Envoyer</button>
+            <p id="displayValue">Chargement...</p>
+            <button onclick="clearEulerLagrange()">Effacer la valeur stockée</button>
+
         </div>
     </div>
 
@@ -223,23 +227,40 @@
         }
 
         function sendLagrangian() {
-            let lagrangian = document.getElementById('lagrangian').value;
-            console.log(`Lagrangien: ${lagrangian}`);
-            // You can also store the value in a variable or send it to a server
+            let Lagrangian = document.getElementById('lagrangian').value;
+            localStorage.setItem('lagrangian', Lagrangian); // Stocker dans localStorage
+            displayLagrangian(); // Mettre à jour l'affichage
+        }
+
+        function displayLagrangian() {
+            let storedValue = localStorage.getItem('lagrangian');
+            document.getElementById('displayValue').innerText = storedValue ? storedValue : "Aucune valeur enregistrée.";
+        }
+
+        // Fonction pour effacer la valeur stockée
+        function clearLagrangian() {
+            localStorage.removeItem('lagrangian');
+            displayLagrangian(); // Rafraîchir l'affichage
         }
 
         function sendEulerLagrange() {
             let eulerLagrange = document.getElementById('eulerLagrange').value;
-            console.log(`Equation de Euler-Lagrange: ${eulerLagrange}`);
-            // You can also store the value in a variable or send it to a server
+            localStorage.setItem('eulerLagrange', eulerLagrange); // Stocker dans localStorage
+            displayEulerLagrange(); // Mettre à jour l'affichage
+        }
+
+        function displayEulerLagrange() {
+            let storedValue = localStorage.getItem('eulerLagrange');
+            document.getElementById('displayValue').innerText = storedValue ? storedValue : "Aucune valeur enregistrée.";
+        }
+
+        // Fonction pour effacer la valeur stockée
+        function clearEulerLagrange() {
+            localStorage.removeItem('eulerLagrange');
+            displayEulerLagrange(); // Rafraîchir l'affichage
         }
 
         // Example of how to access the values
-        function accessValues() {
-            let lagrangian = document.getElementById('lagrangian').value;
-            let eulerLagrange = document.getElementById('eulerLagrange').value;
-            alert(`Lagrangien: ${lagrangian}\nEquation de Euler-Lagrange: ${eulerLagrange}`);
-        }
     </script>
 </body>
 </html>
