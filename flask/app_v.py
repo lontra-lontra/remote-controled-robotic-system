@@ -41,10 +41,13 @@ values_motor =[]
 if config["camera"]:
     picam2 = Picamera2()
 
+    
+
     # Configurer la caméra avec l’image complète et prévisualisation 640x480
     picam2.configure(
         picam2.create_preview_configuration(
             main={"size": (640, 480)},
+            raw={"size": picam2.sensor_resolution},  
             buffer_count=2
         )
     )
