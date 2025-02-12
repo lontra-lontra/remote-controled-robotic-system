@@ -169,25 +169,28 @@
             <br>
         </div>
         
+        
+    <div id="professor-interface" class="view-container professor-interface">
         <div id="password-container">
             <label for="password-input">Entrez le mot de passe :</label>
             <input type="password" id="password-input">
             <button onclick="checkPassword()">Valider</button>
         </div>
-
         <div id="message-container" style="display: none; text-align: center; margin-top: 20px;">
-            <p>Accès autorisé ! Bienvenue dans la section Professeur.</p>
+            <p>Accès autorisé !</p>
             <label for="instruction">Instructions :</label>
             <textarea id="instruction" rows="4"></textarea>
             <br><br/>
-            <label for="value">VAR ECARI :</label>
+            <label for="value">Ecart souhaite :</label>
             <input type="number" id="value" min="0" max="100">
             <button onclick="submitProfessorData()">Envoyer</button>
             <br><br/>
-            <label for="value">VAR DELAI :</label>
+            <label for="value">Delai :</label>
             <input type="number" id="value" min="0" max="100">
             <button onclick="submitProfessorData()">Envoyer</button>
         </div>
+    </div>
+
     </div>
 
     <div class="footer">
@@ -250,7 +253,7 @@
 
         function checkPassword() {
             let password = document.getElementById("password-input").value;
-            if (password === "LONTRA") {
+            if (password === "QUATI") {
                 document.getElementById("password-container").style.display = "none";
                 document.getElementById("message-container").style.display = "block";
                 document.getElementById("professor-interface").classList.add("active");
