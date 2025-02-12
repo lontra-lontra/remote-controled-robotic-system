@@ -239,29 +239,26 @@
             document.getElementById('displayValue').innerText = storedValue ? storedValue : "Aucune valeur enregistrée.";
         }
 
-        // Fonction pour effacer la valeur stockée
-        function clearLagrangian() {
-            localStorage.removeItem('lagrangian');
-            displayLagrangian(); // Rafraîchir l'affichage
-        }
-
         function sendEulerLagrange() {
             let eulerLagrange = document.getElementById('eulerLagrange').value;
             localStorage.setItem('eulerLagrange', eulerLagrange); // Stocker dans localStorage
             displayEulerLagrange(); // Mettre à jour l'affichage
         }
 
-        function displayEulerLagrange() {
-            let storedValue = localStorage.getItem('eulerLagrange');
-            document.getElementById('displayValue').innerText = storedValue ? storedValue : "Aucune valeur enregistrée.";
+        function displayValues() {
+            let storedLagrangian = localStorage.getItem('lagrangian');
+            let storedEulerLagrange = localStorage.getItem('eulerLagrange');
+
+            document.getElementById('displayLagrangian').innerText = storedLagrangian ? storedLagrangian : "Aucune valeur enregistrée.";
+            document.getElementById('displayEulerLagrange').innerText = storedEulerLagrange ? storedEulerLagrange : "Aucune valeur enregistrée.";
         }
 
-        // Fonction pour effacer la valeur stockée
-        function clearEulerLagrange() {
+        // Fonction pour effacer les valeurs stockées
+        function clearValues() {
+            localStorage.removeItem('lagrangian');
             localStorage.removeItem('eulerLagrange');
-            displayEulerLagrange(); // Rafraîchir l'affichage
+            displayValues(); // Rafraîchir l'affichage
         }
-
         // Example of how to access the values
     </script>
 </body>
