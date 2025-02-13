@@ -46,10 +46,9 @@ if config["camera"]:
     # Configurer la caméra avec l’image complète et prévisualisation 640x480
     picam2.configure(
         picam2.create_preview_configuration(
-            main={"size": (640, 480)},
-            raw={"size": picam2.sensor_resolution},  
-            buffer_count=2
-        )
+        main={"size": (640, 480)},
+        buffer_count=2
+    )
     )
     
     # Allow camera to warm up
