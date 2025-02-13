@@ -60,6 +60,14 @@
             align-items: center;
             margin: 10px 0;
         }
+        #cameraFrame {
+        width: 100%;  /* Ajuste la largeur à 100% de l'écran */
+        max-width: 800px; /* Limite la largeur max pour éviter trop grand */
+        height: auto; /* Ajuste automatiquement la hauteur */
+        aspect-ratio: 4 / 3; /* Maintient le ratio de 640x480 */
+        border: none; /* Supprime les bordures */
+        }
+
 
         .button-container {
             display: flex;
@@ -201,7 +209,7 @@
                 <iframe src="/graph?query=values_speed_camera"></iframe>
                 <iframe src="/graph?query=values_camera_filtered"></iframe>
                 <iframe src="/graph?query=values_derivative_of_camera_filtered"></iframe>
-                <iframe src="/camera_view" width="640" height="480"></iframe>
+                <iframe id="cameraFrame" src="/camera_view"></iframe>
                 <iframe src="/control"></iframe>
             </div>
         </div>

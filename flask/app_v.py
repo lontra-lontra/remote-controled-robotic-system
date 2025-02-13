@@ -50,9 +50,8 @@ if config["camera"]:
         buffer_count=2
     )
     )
-    
     # Allow camera to warm up
-    time.sleep(3)
+    time.sleep(2)
 
     picam2.start()
     
