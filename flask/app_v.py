@@ -124,9 +124,6 @@ def process_frame(frame):
 
 
 
-
-
-
 def generate_frames():
     global frame, should_stop
     
