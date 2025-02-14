@@ -41,18 +41,20 @@ values_motor =[]
 if config["camera"]:
     picam2 = Picamera2()
 
+    
+
     # Configurer la caméra avec l’image complète et prévisualisation 640x480
-    preview_config = picam2.create_preview_configuration(
+    picam2.configure(
+        picam2.create_preview_configuration(
         main={"size": (640, 480)},
         buffer_count=2
     )
+    )
+    # Allow camera to warm up
+    time.sleep(2)
+
+    picam2.start()
     
-    picam2.configure(preview_config)
-
-    # Laisser la caméra s'échauffer
-    time.sleep(6)
-
-    picam2.start()    
 
 
 frame = None
@@ -71,7 +73,7 @@ def correction(pos, centre_roue):
     return pb
 
 
-def create_mask_1(image): ## bleu
+def create_mask(image):
     """Applique un masque basé sur des seuils HSV et retourne le masque binaire."""
     # Convertir l'image en BGR -> HSV
     image_hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
@@ -83,18 +85,6 @@ def create_mask_1(image): ## bleu
     # Créer le masque binaire
     mask = cv2.inRange(image_hsv, lower_bound, upper_bound)
     return mask
-
-def create_mask_2(image): ## violet
-    image_hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-    
-    # Définir les seuils pour chaque canal HSV
-    lower_bound = np.array([int(0.822 * 179), int(0.119 * 255), int(0.000 * 255)], dtype=np.uint8)
-    upper_bound = np.array([int(0.000 * 179), int(1.000 * 255), int(1.000 * 255)], dtype=np.uint8)
-    
-    mask = cv2.inRange(image_hsv, lower_bound, upper_bound)
-        
-    return mask
-
 
 def find_centroid_of_largest_contour(mask):
     """Trouve le centroïde du plus grand contour dans l'image binaire."""
@@ -121,7 +111,7 @@ def process_frame(frame):
     frame_bgr = cv2.flip(frame_bgr,0)
     
     # Créer le masque
-    mask = create_mask_2(frame_bgr)
+    mask = create_mask(frame_bgr)
     
     # Trouver le centroïde
     centroid = find_centroid_of_largest_contour(mask)
