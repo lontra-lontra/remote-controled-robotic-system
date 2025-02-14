@@ -91,7 +91,7 @@ def create_mask_2(image): ## violet
     lower_bound = np.array([int(0.822 * 179), int(0.119 * 255), int(0.000 * 255)], dtype=np.uint8)
     upper_bound = np.array([int(0.000 * 179), int(1.000 * 255), int(1.000 * 255)], dtype=np.uint8)
     
-    mask = cv2.inRange(I, lower_bound, upper_bound)
+    mask = cv2.inRange(image_hsv, lower_bound, upper_bound)
         
     return mask
 
