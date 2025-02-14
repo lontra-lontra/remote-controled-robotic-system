@@ -143,12 +143,14 @@ def generate_frames():
             # Convert frame to jpg for streaming
             ret, buffer = cv2.imencode('.jpg', processed_frame)
             frame_bytes = buffer.tobytes()
-            
+            if centroid is None:
+                centroid = values[-1]
 
             sign = np.sign(centroid[0] - centre[0]) 
             #pb = correction(centroid, centre)
             pb = np.array(centroid) - np.array(centre)
             distance = np.linalg.norm(pb)
+
 
 
             scale = 0.1/np.linalg.norm(np.array(plus_loing) - np.array(plus_proche))
