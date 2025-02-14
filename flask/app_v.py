@@ -146,7 +146,7 @@ def process_frame(frame):
     frame_bgr = cv2.flip(frame_bgr,0)
     
     # Créer le masque
-    mask = create_mask_2(frame_bgr)
+    mask = create_mask_1(frame_bgr)
     
     # Trouver le centroïde
     centroid = find_centroid_of_largest_contour(mask)
