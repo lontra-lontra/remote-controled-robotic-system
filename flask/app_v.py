@@ -147,8 +147,6 @@ def generate_frames():
             ret, buffer = cv2.imencode('.jpg', processed_frame)
             frame_bytes = buffer.tobytes()
             
-            if centroid is None:
-                centroid = values[-1]
 
             sign = np.sign(centroid[0] - centre[0]) 
             #pb = correction(centroid, centre)
