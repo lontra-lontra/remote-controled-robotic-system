@@ -84,39 +84,16 @@ def create_mask_1(image): ## bleu
     mask = cv2.inRange(image_hsv, lower_bound, upper_bound)
     return mask
 
-def create_mask_2(RGB): ## violet
-    """
-    Crée un masque basé sur un seuillage en espace de couleur HSV.
-    
-    Arguments:
-        RGB : Image en format numpy array (BGR, comme utilisé par OpenCV)
-    
-    Retourne:
-        BW : Masque binaire
-        maskedRGBImage : Image RGB avec fond supprimé
-    """
-    # Convertir l'image de BGR à HSV
-    I = cv2.cvtColor(RGB, cv2.COLOR_BGR2HSV)
+def create_mask_2(image): ## violet
+    image_hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
     
     # Définir les seuils pour chaque canal HSV
     lower_bound = np.array([int(0.822 * 179), int(0.119 * 255), int(0.000 * 255)], dtype=np.uint8)
     upper_bound = np.array([int(0.000 * 179), int(1.000 * 255), int(1.000 * 255)], dtype=np.uint8)
     
-    # Gestion du cas où upper_bound[0] < lower_bound[0] (plage circulaire de H)
-    if upper_bound[0] < lower_bound[0]:
-        mask1 = cv2.inRange(I, lower_bound, np.array([179, upper_bound[1], upper_bound[2]], dtype=np.uint8))
-        mask2 = cv2.inRange(I, np.array([0, lower_bound[1], lower_bound[2]], dtype=np.uint8), upper_bound)
-        BW = cv2.bitwise_or(mask1, mask2)
-    else:
-        BW = cv2.inRange(I, lower_bound, upper_bound)
-    
-    # Appliquer le masque sur l'image originale
-    maskedRGBImage = cv2.bitwise_and(RGB, RGB, mask=BW)
-    
-    # Enregistrer l'image masquée
-    cv2.imwrite("masked_image.png", maskedRGBImage)
-    
-    return BW, maskedRGBImage
+    mask = cv2.inRange(I, lower_bound, upper_bound)
+        
+    return mask
 
 
 def find_centroid_of_largest_contour(mask):
