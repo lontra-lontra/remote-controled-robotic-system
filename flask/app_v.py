@@ -51,7 +51,7 @@ if config["camera"]:
     )
     )
     # Allow camera to warm up
-    time.sleep(2)
+    time.sleep(6)
 
     picam2.start()
     
