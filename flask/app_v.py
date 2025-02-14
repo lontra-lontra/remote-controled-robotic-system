@@ -41,20 +41,18 @@ values_motor =[]
 if config["camera"]:
     picam2 = Picamera2()
 
-    
-
     # Configurer la caméra avec l’image complète et prévisualisation 640x480
-    picam2.configure(
-        picam2.create_preview_configuration(
+    preview_config = picam2.create_preview_configuration(
         main={"size": (640, 480)},
         buffer_count=2
     )
-    )
-    # Allow camera to warm up
+    
+    picam2.configure(preview_config)
+
+    # Laisser la caméra s'échauffer
     time.sleep(6)
 
-    picam2.start()
-    
+    picam2.start()    
 
 
 frame = None
