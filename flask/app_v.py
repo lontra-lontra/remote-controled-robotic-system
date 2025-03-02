@@ -4,7 +4,7 @@ import json
 from threading import Thread
 from flask import Flask, Response, request, jsonify, render_template
 import os
-from our_socket_module import WebSocketClient  # Import the WebSocketClient module
+from flask.socket_module import WebSocketClient  # Import the WebSocketClient module
 import cv2
 import time
 from picamera2 import Picamera2
