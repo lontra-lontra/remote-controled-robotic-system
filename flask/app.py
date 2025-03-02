@@ -123,11 +123,11 @@ def index_new():
 
 @app.route('/graph')
 def g():
-    return render_template('g.html')
+    return render_template('graph.html')
 
 @app.route('/graphgraph')
 def gg():
-    return render_template('gg.html')
+    return render_template('graphgraph.html')
 
 @app.route('/values', methods=['GET'])
 def l():
